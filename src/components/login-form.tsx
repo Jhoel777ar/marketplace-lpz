@@ -21,7 +21,7 @@ export function LoginForm({
                 </p>
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Juel</Label>
                 <Input
                   id="email"
                   type="email"
