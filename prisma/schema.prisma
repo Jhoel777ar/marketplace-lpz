@@ -4,12 +4,154 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+//generator client {
+//  provider = "prisma-client-js"
+//  output   = "../src/generated/prisma"
+//}
+
+//datasource db {
+//  provider = "postgresql"
+//  url      = env("DATABASE_URL")
+//}
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id              Int         @id @default(autoincrement())
+  nombre          String
+  correo          String      @unique
+  contraseña      String
+  rol             String      // Cliente, Emprendedor, Administrador
+  estado          String      // Activo,Inactivo
+  fechaRegistro   DateTime    @default(now())
+  ultimaActividad DateTime    @updatedAt
+  cliente         Cliente?
+  emprendedor     Emprendedor?
+  direcciones     Dirección[]
+}
+
+model Cliente {
+  id              Int         @id @default(autoincrement())
+  usuario         Usuario     @relation(fields: [id], references: [id])
+  puntosFidelidad Int         @default(0)
+  nivelCliente    String      // Básico, Premium
+  carritos        Carrito[]
+  pedidos         Pedido[]
+  reseñas         Reseña[]
+}
+
+model Emprendedor {
+  id                 Int         @id @default(autoincrement())
+  usuario            Usuario     @relation(fields: [id], references: [id])
+  carreraUniversitaria String
+  semestre           Int
+  documento          String
+  productos          Producto[]
+}
+
+model Dirección {
+  id           Int      @id @default(autoincrement())
+  calle        String
+  ciudad       String
+  codigoPostal String
+  pais         String
+  usuarioId    Int
+  usuario      Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model Producto {
+  id               Int           @id @default(autoincrement())
+  nombre           String
+  descripcion      String        @db.Text
+  precio           Decimal       @db.Decimal(10, 2)
+  categoria        String
+  destacado        Boolean       @default(false)
+  fechaPublicacion DateTime      @default(now())
+  emprendedorId    Int
+  emprendedor      Emprendedor   @relation(fields: [emprendedorId], references: [id])
+  imagenes         ImagenProducto[]
+  reseñas          Reseña[]
+  carritos         Carrito[]
+}
+
+model ImagenProducto {
+  id          Int      @id @default(autoincrement())
+  url         String
+  productoId  Int
+  producto    Producto @relation(fields: [productoId], references: [id])
+}
+
+model Reseña {
+  id          Int      @id @default(autoincrement())
+  calificacion Int
+  comentario   String   @db.Text
+  creacion    DateTime @default(now())
+  tipo        String   // Producto, Servicio
+  productoId  Int
+  clienteId   Int
+  producto    Producto @relation(fields: [productoId], references: [id])
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+}
+
+model Carrito {
+  id           Int      @id @default(autoincrement())
+  cantidad     Int
+  creacion     DateTime @default(now())
+  actualizacion DateTime @updatedAt
+  clienteId    Int
+  productoId   Int
+  cliente      Cliente  @relation(fields: [clienteId], references: [id])
+  producto     Producto @relation(fields: [productoId], references: [id])
+}
+
+model Cupon {
+  id                 Int       @id @default(autoincrement())
+  codigo             String    @unique
+  porcentajeDescuento Decimal   @db.Decimal(5, 2)
+  fechaExpiracion    DateTime
+  usosRestantes      Int
+  estado             String    // Activo, Expirado
+  pedidos            Pedido[]
+}
+
+model Pedido {
+  id               Int       @id @default(autoincrement())
+  numeroPedido     String    @unique
+  estado           String    //Pendiente, Enviado, Entregado
+  fechaCreacion    DateTime  @default(now())
+  fechaActualizacion DateTime @updatedAt
+  total            Decimal   @db.Decimal(10, 2)
+  clienteId        Int
+  cuponId          Int?
+  cliente          Cliente   @relation(fields: [clienteId], references: [id])
+  cupon            Cupon?    @relation(fields: [cuponId], references: [id])
+  pago             Pago?
+  envio            Envio?
+}
+
+model Pago {
+  id           Int      @id @default(autoincrement())
+  monto        Decimal  @db.Decimal(10, 2)
+  estadoPago   String   // Completado, Pendiente
+  fechaPago    DateTime @default(now())
+  metodoPago   String   // Tarjeta, Efectivo
+  pedidoId     Int      @unique
+  pedido       Pedido   @relation(fields: [pedidoId], references: [id])
+}
+
+model Envio {
+  id               Int      @id @default(autoincrement())
+  numeroGuia       String   @unique
+  estadoEnvio      String   // Preparando, Enviado, Entregado
+  fechaActualizacion DateTime @updatedAt
+  pedidoId         Int      @unique
+  pedido           Pedido   @relation(fields: [pedidoId], references: [id])
 }
