@@ -1,13 +1,13 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../api/auth/[...nextauth]/route";
-import { LoginForm } from "@/components/login-form";
+import { RegisterForm } from "@/components/register-form";
 import { GalleryVerticalEnd } from "lucide-react";
 
-export default async function LoginPage() {
+export default async function RegisterPage() {
   const session = await getServerSession(authOptions);
   if (session) {
-    redirect("/dashboard");
+    redirect("/dashboard"); 
   }
 
   return (
@@ -23,7 +23,7 @@ export default async function LoginPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            <RegisterForm />
           </div>
         </div>
       </div>
