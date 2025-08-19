@@ -19,8 +19,8 @@ Objetivos Específicos:
 
 
 ## Equipo de Desarrollo
-- Joel Andres Chura Quispe – Scrum Master, Desarrollador Backend
 - Lic. Rosalía Lopez Montalvo – Product Owner  
+- Joel Andres Chura Quispe – Scrum Master, Desarrollador Backend
 - Shamir Erick Condori Troche – Desarrollador frontend, Diseñador UX 
 - Luis Fernando Villca Mamani – Diseñador UI, Desarrollador Backend
 - Leonardo Fidel Arana Isita – Diseñador UX, Desarrollador Frontend
@@ -84,4 +84,5 @@ Ejemplo:
 - Joel Andres Chura Quispe
 - Shamir Erick Condori Troche 
 - Luis Fernando Villca Mamani
-- Leonardo Fidel Arana Isita 
+- Leonardo Fidel Arana Isita
+- Danner Alejandro Calle Mamani
