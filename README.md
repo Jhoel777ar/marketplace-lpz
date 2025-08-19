@@ -28,8 +28,8 @@ Objetivos Específicos:
 
 
 ## Tecnologías a Utilizar
-- Frontend: Next.js + tailwind.css
-- Backend:  React + node.js
+- Frontend: Laravel + tailwind.css
+- Backend:  Laravel + node.js 
 - Base de Datos: MySql
 - Gestión de Proyectos: Jira (Scrum)  
 - Colaboración Visual: Miro  
