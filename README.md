@@ -5,7 +5,6 @@
 
 El objetivo es fomentar el emprendimiento dentro de la comunidad emprendedora, brindando un espacio confiable, seguro y accesible para la compra-venta.
 
----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Objetivos
 Objetivo General
@@ -19,8 +18,6 @@ Objetivos Específicos:
 6.	Asegurar usabilidad móvil responsive y medidas de seguridad
 
 
----
-
 ## Equipo de Desarrollo
 - Joel Andres Chura Quispe – Scrum Master, Desarrollador Backend
 - Lic. Rosalía Lopez Montalvo – Product Owner  
@@ -29,17 +26,15 @@ Objetivos Específicos:
 - Leonardo Fidel Arana Isita – Diseñador UX, Desarrollador Frontend
 - Danner Alejandro Calle Mamani – QA Tester
 
----
 
 ## Tecnologías a Utilizar
-- Frontend:  
-- Backend:  
+- Frontend: Next.js + tailwind.css
+- Backend:  React + node.js
 - Base de Datos: MySql
 - Gestión de Proyectos: Jira (Scrum)  
 - Colaboración Visual: Miro  
 - Control de Versiones: GitHub  
 
----
 
 ## Funcionalidades Principales
 ### Épica 1: Gestión de Usuarios y Autenticación
@@ -68,7 +63,6 @@ Objetivos Específicos:
 - Soporte móvil responsive.
 - Integración con redes sociales.
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Backlog Inicial (Sprint 0)
 
@@ -76,7 +70,6 @@ Ejemplo:
 - US-001: Registro de Emprendedor
   Como estudiante emprendedor quiero registrarme en la plataforma con mi información universitaria para poder vender mis productos a la comunidad.
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Entregables Semana 1 (Sprint 0)
 1. *README.md* (este archivo).  
@@ -85,10 +78,9 @@ Ejemplo:
 4. *Sprint 1 Backlog* (PDF).  
 5. *Enlaces a Jira, GitHub y Miro* en archivo .txt.  
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Contacto
-Equipo: Grupo 2 (ARK-NEXT)
+## Equipo: Grupo 2 (Stark-Next)
 - Joel Andres Chura Quispe
 - Shamir Erick Condori Troche 
 - Luis Fernando Villca Mamani
