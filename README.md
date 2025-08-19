@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+#  TuEx Market – Marketplace para Emprendedores
 
-## Getting Started
+## Descripción del Proyecto
+"TuEx Market" es una plataforma digital diseñada como un Marketplace universitario para emprendedores donde estudiantes pueden ofrecer y vender productos a clientes donde pueden explorar, comprar.
 
-First, run the development server:
+El objetivo es fomentar el emprendimiento dentro de la comunidad emprendedora, brindando un espacio confiable, seguro y accesible para la compra-venta.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Objetivos
+Objetivo General
+Desarrollar un marketplace digital que conecta emprendedores universitarios con la comunidad local, facilitando transacciones comerciales y fomentando el crecimiento del ecosistema emprendedor.
+Objetivos Específicos:
+1.	Implementar sistema de registro y autenticación diferenciado por roles
+2.	Desarrollar catálogo de productos con gestión avanzada de inventarios
+3.	Crear sistema de compras con carrito y procesamiento de pagos simulado
+4.	Establecer gestión completa de pedidos con notificaciones en tiempo real
+5.	Integrar sistema de reseñas y calificaciones
+6.	Asegurar usabilidad móvil responsive y medidas de seguridad
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Equipo de Desarrollo
+- Joel Andres Chura Quispe – Scrum Master, Desarrollador Backend
+- Lic. Rosalía Lopez Montalvo – Product Owner  
+- Shamir Erick Condori Troche – Desarrollador frontend, Diseñador UX 
+- Luis Fernando Villca Mamani – Diseñador UI, Desarrollador Backend
+- Leonardo Fidel Arana Isita – Diseñador UX, Desarrollador Frontend
+- Danner Alejandro Calle Mamani – QA Tester
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tecnologías a Utilizar
+- Frontend:  
+- Backend:  
+- Base de Datos: MySql
+- Gestión de Proyectos: Jira (Scrum)  
+- Colaboración Visual: Miro  
+- Control de Versiones: GitHub  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Funcionalidades Principales
+### Épica 1: Gestión de Usuarios y Autenticación
+- Registro de emprendedores y clientes.
+- Recuperación de contraseñas.
+- Validación con correos institucionales.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Épica 2: Catálogo de Productos
+- Creación, edición y exploración de productos.
+- Filtros avanzados y búsquedas.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Épica 3: Sistema de Compras
+- Carrito de compras persistente.
+- Proceso de pago simulado.
+- Cupones y descuentos.
+
+### Épica 4: Gestión de Pedidos
+- Dashboard de ventas para emprendedores.
+- Notificaciones en tiempo real.
+
+### Épica 5: Sistema de Reseñas
+- Calificación y reseñas de productos y emprendedores.
+
+### Épica 6: Seguridad y Soporte
+- Reporte de problemas.
+- Soporte móvil responsive.
+- Integración con redes sociales.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Backlog Inicial (Sprint 0)
+
+Ejemplo:
+- US-001: Registro de Emprendedor
+  Como estudiante emprendedor quiero registrarme en la plataforma con mi información universitaria para poder vender mis productos a la comunidad.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Entregables Semana 1 (Sprint 0)
+1. *README.md* (este archivo).  
+2. *Product Backlog* exportado de Jira (PDF).  
+3. *Definition of Done* (PDF).  
+4. *Sprint 1 Backlog* (PDF).  
+5. *Enlaces a Jira, GitHub y Miro* en archivo .txt.  
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Contacto
+Equipo: Grupo 2 (ARK-NEXT)
+- Joel Andres Chura Quispe
+- Shamir Erick Condori Troche 
+- Luis Fernando Villca Mamani
+- Leonardo Fidel Arana Isita 
