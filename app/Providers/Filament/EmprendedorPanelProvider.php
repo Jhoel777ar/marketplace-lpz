@@ -27,6 +27,11 @@ class EmprendedorPanelProvider extends PanelProvider
             ->id('emprendedor')
             ->path('emprendedor')
             ->login()
+            ->emailVerification()
+            ->passwordReset()
+            ->profile(isSimple: false)
+            ->authGuard('web')
+            ->authPasswordBroker('users')
             ->colors([
                 'primary' => Color::Amber,
             ])

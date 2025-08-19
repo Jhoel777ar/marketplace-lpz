@@ -18,21 +18,10 @@ class Register extends BaseRegister
                         $this->getEmailFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getPasswordConfirmationFormComponent(),
-                        $this->getRoleFormComponent(), 
                     ])
                     ->statePath('data'),
             ),
         ];
     }
  
-    protected function getRoleFormComponent(): Component
-    {
-        return Select::make('role')
-            ->options([
-                'buyer' => 'Buyer',
-                'seller' => 'Seller',
-            ])
-            ->default('buyer')
-            ->required();
-    }
 }
