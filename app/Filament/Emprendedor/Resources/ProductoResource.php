@@ -106,6 +106,21 @@ class ProductoResource extends Resource
                     ])
                     ->columnSpan('full')
                     ->visible(fn($record) => $record === null),
+                //solo para entonos prueba
+                /*
+                Forms\Components\Repeater::make('imagenes')
+                    ->label('Imágenes del Producto')
+                    ->relationship()
+                    ->maxItems(5)
+                    ->schema([
+                        Forms\Components\TextInput::make('ruta')
+                            ->label('URL de la Imagen')
+                            ->placeholder('https://example.com/imagen.jpg')
+                            ->url()
+                            ->required(),
+                    ])
+                    ->columnSpan('full'),
+                */
                 Forms\Components\Section::make('Fechas del Producto')
                     ->description('Información de creación y última actualización')
                     ->columns(2)

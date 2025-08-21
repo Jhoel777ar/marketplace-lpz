@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "bezhansalleh/filament-shield": "^3.3",
+        "devonab/filament-easy-footer": "1.0",
         "filament/filament": "3.3",
         "filament/notifications": "3.3",
         "laravel/framework": "^12.0",
