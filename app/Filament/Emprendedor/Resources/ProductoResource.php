@@ -30,7 +30,7 @@ class ProductoResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return Auth::check() ? static::getModel()::where('emprendedor_id', Auth::id())->count() : null;
     }
 
     public static function form(Form $form): Form
@@ -243,6 +243,16 @@ class ProductoResource extends Resource
         return [
             RelationManagers\ImagenesRelationManager::class,
         ];
+    }
+
+
+    public static function getTableQuery(): Builder
+    {
+        $query = parent::getTableQuery();
+        if (Auth::check()) {
+            $query->where('emprendedor_id', Auth::id());
+        }
+        return $query;
     }
 
     public static function getPages(): array
