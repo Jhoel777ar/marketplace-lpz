@@ -13,11 +13,11 @@ class Producto extends Model
         'nombre',
         'descripcion',
         'precio',
-        'categoria',
         'destacado',
+        'publico',
+        'stock',
         'fecha_publicacion',
         'emprendedor_id',
-        'url_imagen'
     ];
 
     public function emprendedor()
@@ -29,5 +29,9 @@ class Producto extends Model
     {
         return $this->hasMany(ProductoImagen::class);
     }
-    
+
+    public function categorias()
+    {
+        return $this->belongsToMany(Categoria::class, 'categoria_producto');
+    }
 }

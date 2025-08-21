@@ -36,7 +36,9 @@ class EmprendedorPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->registration(Register::class) 
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
+            ->registration(Register::class)
             ->discoverResources(in: app_path('Filament/Emprendedor/Resources'), for: 'App\\Filament\\Emprendedor\\Resources')
             ->discoverPages(in: app_path('Filament/Emprendedor/Pages'), for: 'App\\Filament\\Emprendedor\\Pages')
             ->pages([
@@ -48,8 +50,8 @@ class EmprendedorPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->plugins([
-              FilamentBackgroundsPlugin::make()
-                ->showAttribution(false),
+                FilamentBackgroundsPlugin::make()
+                    ->showAttribution(false),
             ])
             ->middleware([
                 EncryptCookies::class,
