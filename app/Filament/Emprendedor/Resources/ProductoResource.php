@@ -33,6 +33,11 @@ class ProductoResource extends Resource
         return Auth::check() ? static::getModel()::where('emprendedor_id', Auth::id())->count() : null;
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['nombre'];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
