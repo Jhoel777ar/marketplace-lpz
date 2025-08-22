@@ -19,6 +19,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
+use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 
 class EmprendedorPanelProvider extends PanelProvider
 {
@@ -36,7 +37,9 @@ class EmprendedorPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->registration(Register::class) 
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
+            ->registration(Register::class)
             ->discoverResources(in: app_path('Filament/Emprendedor/Resources'), for: 'App\\Filament\\Emprendedor\\Resources')
             ->discoverPages(in: app_path('Filament/Emprendedor/Pages'), for: 'App\\Filament\\Emprendedor\\Pages')
             ->pages([
@@ -48,8 +51,11 @@ class EmprendedorPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->plugins([
-              FilamentBackgroundsPlugin::make()
-                ->showAttribution(false),
+                FilamentBackgroundsPlugin::make()
+                    ->showAttribution(false),
+                EasyFooterPlugin::make()
+                    ->withFooterPosition('footer')
+                    ->withLoadTime('Se cargo en :'),
             ])
             ->middleware([
                 EncryptCookies::class,

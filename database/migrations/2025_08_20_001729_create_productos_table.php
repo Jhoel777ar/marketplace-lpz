@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->text('descripcion');
+            $table->longText('descripcion');
             $table->decimal('precio', 10, 2);
-            $table->string('categoria');
             $table->boolean('destacado')->default(false);
+            $table->boolean('publico')->default(false);
+            $table->integer('stock')->default(0);
             $table->timestamp('fecha_publicacion', 3)->useCurrent();
             $table->foreignId('emprendedor_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
@@ -28,6 +29,18 @@ return new class extends Migration
             $table->string('ruta');
             $table->timestamps();
         });
+        Schema::create('categorias', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre')->unique();
+            $table->timestamps();
+        });
+        Schema::create('categoria_producto', function (Blueprint $table) {
+            $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
+            $table->foreignId('categoria_id')->constrained('categorias')->onDelete('cascade');
+            $table->primary(
+                ['producto_id', 'categoria_id']
+            );
+        });
     }
 
     /**
@@ -35,6 +48,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('categoria_producto');
+        Schema::dropIfExists('categorias');
         Schema::dropIfExists('producto_imagenes');
         Schema::dropIfExists('productos');
     }
