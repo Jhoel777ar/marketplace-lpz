@@ -18,6 +18,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
+use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -39,11 +40,11 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->plugins([
-              FilamentBackgroundsPlugin::make()
-                ->showAttribution(false),
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                FilamentBackgroundsPlugin::make()->showAttribution(false),
+                EasyFooterPlugin::make()->withFooterPosition('footer')->withLoadTime('Se cargo en :'),
             ])
             ->middleware([
                 EncryptCookies::class,
