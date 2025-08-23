@@ -33,6 +33,10 @@ class ProductoResource extends Resource
         return Auth::check() ? static::getModel()::where('emprendedor_id', Auth::id())->count() : null;
     }
 
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->ownedBy(auth()->id());
+    }
     public static function getGloballySearchableAttributes(): array
     {
         return ['nombre'];
@@ -140,6 +144,7 @@ class ProductoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Producto::ownedBy(auth()->id()))
             ->columns([
                 Tables\Columns\TextColumn::make('nombre')
                     ->searchable()
@@ -265,14 +270,11 @@ class ProductoResource extends Resource
         ];
     }
 
-
-    public static function getTableQuery(): Builder
+    public static function canCreate(): bool
     {
-        $query = parent::getTableQuery();
-        if (Auth::check()) {
-            $query->where('emprendedor_id', Auth::id());
-        }
-        return $query;
+        $user = auth()->user();
+        $verificacion = $user->verificacionEmprendedor;
+        return $verificacion && $verificacion->is_verified;
     }
 
     public static function getPages(): array

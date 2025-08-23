@@ -27,6 +27,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'name',
         'email',
         'password',
+        'ubicacion',
+        'semestre',
+        'carrera',
     ];
 
     /**
@@ -62,6 +65,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
             ->take(2)
             ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function verificacionEmprendedor()
+    {
+        return $this->hasOne(EmprendedorVerificacion::class);
     }
 
     public function getFilamentAvatarUrl(): ?string
