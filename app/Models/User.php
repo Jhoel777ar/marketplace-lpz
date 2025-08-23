@@ -11,11 +11,12 @@ use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\HasAvatar;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +27,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
         'name',
         'email',
         'password',
+        'ubicacion',
+        'semestre',
+        'carrera',
     ];
 
     /**
@@ -63,13 +67,31 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
             ->implode('');
     }
 
+    public function verificacionEmprendedor()
+    {
+        return $this->hasOne(EmprendedorVerificacion::class);
+    }
+
     public function getFilamentAvatarUrl(): ?string
     {
         return $this->avatar_url;
     }
 
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            if (!$user->roles()->exists()) {
+                $user->assignRole('cliente');
+            }
+        });
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return match ($panel->getId()) {
+            'admin'        => $this->hasRole('admin'),
+            'emprendedor'  => $this->hasRole('emprendedor'),
+            default        => false,
+        };
     }
 }

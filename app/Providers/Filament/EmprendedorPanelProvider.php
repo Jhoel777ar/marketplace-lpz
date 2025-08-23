@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Emprendedor\Pages\Auth\Register;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -48,14 +49,12 @@ class EmprendedorPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Emprendedor/Widgets'), for: 'App\\Filament\\Emprendedor\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->plugins([
-                FilamentBackgroundsPlugin::make()
-                    ->showAttribution(false),
-                EasyFooterPlugin::make()
-                    ->withFooterPosition('footer')
-                    ->withLoadTime('Se cargo en :'),
+                FilamentShieldPlugin::make(),
+                FilamentBackgroundsPlugin::make()->showAttribution(false),
+                EasyFooterPlugin::make()->withFooterPosition('footer')->withLoadTime('Se cargo en :'),
+                 \MartinPetricko\FilamentSentryFeedback\FilamentSentryFeedbackPlugin::make(),
             ])
             ->middleware([
                 EncryptCookies::class,

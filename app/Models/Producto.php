@@ -34,4 +34,9 @@ class Producto extends Model
     {
         return $this->belongsToMany(Categoria::class, 'categoria_producto');
     }
+
+    public function scopeOwnedBy($query, $userId)
+    {
+        return $query->where('emprendedor_id', $userId);
+    }
 }
