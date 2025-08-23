@@ -54,6 +54,7 @@ class EmprendedorPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 FilamentBackgroundsPlugin::make()->showAttribution(false),
                 EasyFooterPlugin::make()->withFooterPosition('footer')->withLoadTime('Se cargo en :'),
+                 \MartinPetricko\FilamentSentryFeedback\FilamentSentryFeedbackPlugin::make(),
             ])
             ->middleware([
                 EncryptCookies::class,
