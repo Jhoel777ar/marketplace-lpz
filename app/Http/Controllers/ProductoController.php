@@ -13,14 +13,14 @@ class ProductoController extends Controller
 
         // Filtrar por búsqueda si hay texto
         if ($request->has('search') && !empty($request->search)) {
-            $query->where('nombre', 'like', '%' . $request->search . '%');
+            $query->where('nombre', 'like', $request->search . '%');
         }
 
         // Ejecutamos la consulta
         $productos = $query->get();
 
         // Retornamos la vista con los productos
-        return view('home', compact('productos'));
+        return view('dashboard', compact('productos'));
     }
 
 }
