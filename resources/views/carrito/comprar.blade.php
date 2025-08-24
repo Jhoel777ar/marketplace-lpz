@@ -17,22 +17,25 @@
 
             <h2 class="text-2xl font-bold mb-4">Tu Carrito</h2>
 
-            @if(count($productos) > 0)
-            @php $total = 0; @endphp
-            @foreach($productos as $producto)
+            @if($productos->count() > 0)
+            @foreach($productos as $item)
             @php
-            $cantidad = $carrito[$producto->id];
-            $subtotal = $producto->precio * $cantidad;
-            $total += $subtotal;
+            $producto = $item->producto; // relación con productos
+            $cantidad = $item->cantidad;
+            $subtotal = $item->subtotal;
             @endphp
-            <div class="flex flex-col sm:flex-row items-center border-b border-gray-200 pb-4 mb-4">
 
+            <div class="flex flex-col sm:flex-row items-center border-b border-gray-200 pb-4 mb-4">
                 <!-- Imagen -->
                 <div class="w-32 h-32 flex-shrink-0 bg-gray-100 rounded-lg flex items-center justify-center">
                     @if($producto->imagenes->isNotEmpty())
-                    <img src="{{ $producto->imagenes->first()->ruta }}" class="w-full h-full object-contain" alt="{{ $producto->nombre }}">
+                    <img src="{{ $producto->imagenes->first()->ruta }}"
+                        class="w-full h-full object-contain"
+                        alt="{{ $producto->nombre }}">
                     @else
-                    <img src="https://via.placeholder.com/150" class="w-full h-full object-contain" alt="{{ $producto->nombre }}">
+                    <img src="https://via.placeholder.com/150"
+                        class="w-full h-full object-contain"
+                        alt="{{ $producto->nombre }}">
                     @endif
                 </div>
 
@@ -45,9 +48,12 @@
                     <!-- Controles de cantidad -->
                     <form action="{{ route('carrito.actualizar', $producto->id) }}" method="POST" class="flex items-center mt-2 space-x-2">
                         @csrf
-                        <button type="submit" name="cantidad" value="{{ $cantidad - 1 }}" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">-</button>
-                        <input type="text" value="{{ $cantidad }}" class="w-12 text-center border rounded" readonly>
-                        <button type="submit" name="cantidad" value="{{ $cantidad + 1 }}" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
+                        <button type="submit" name="cantidad" value="{{ $cantidad - 1 }}"
+                            class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">-</button>
+                        <input type="text" value="{{ $cantidad }}"
+                            class="w-12 text-center border rounded" readonly>
+                        <button type="submit" name="cantidad" value="{{ $cantidad + 1 }}"
+                            class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300">+</button>
                     </form>
 
                     <!-- Botón eliminar -->
@@ -61,6 +67,7 @@
             @else
             <p>Tu carrito está vacío 😢</p>
             @endif
+
         </div>
 
         <!-- Sección Resumen -->
@@ -69,7 +76,8 @@
 
             <div class="flex justify-between mb-2">
                 <span>Subtotal</span>
-                <span>{{ number_format($total ?? 0,2) }} Bs</span>
+                <span>{{ number_format($carrito->total ?? 0,2) }} Bs</span>
+
             </div>
 
             <div class="flex justify-between mb-2">

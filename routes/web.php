@@ -25,29 +25,27 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-<<<<<<< HEAD
-// Ver carrito
-Route::get('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
 
-// Agregar producto
-Route::post('/carrito/agregar/{id}', [CarritoController::class, 'agregar'])->name('carrito.agregar');
-
-// Actualizar cantidad
-Route::post('/carrito/actualizar/{id}', [CarritoController::class, 'actualizar'])->name('carrito.actualizar');
-
-// Eliminar producto
-Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
-
-
-
-
-
-
-=======
 // Rutas para Google Login
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
->>>>>>> origin/main
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/carrito/agregar/{id}', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+    Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito.ver');
+    Route::post('/carrito/actualizar/{id}', [CarritoController::class, 'actualizar'])->name('carrito.actualizar');
+    Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+    Route::get('/carrito/contador', [CarritoController::class, 'contadorJson'])->name('carrito.contador');
+});
+
+
+
+
+
+
+
+
 
 require __DIR__.'/auth.php';
 

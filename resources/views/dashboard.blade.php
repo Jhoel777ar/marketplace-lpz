@@ -3,6 +3,7 @@
 <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
     <div
         class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+
         <!-- Header -->
         <header class="shadow">
             <div class=" mx-auto px-4 py-3 flex justify-between items-center">
@@ -17,6 +18,7 @@
                 </div>
             </div>
         </header>
+
         <!-- Banner conferencia -->
         <section class="relative bg-white text-white overflow-hidden">
             <div class="mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 items-center relative">
@@ -31,36 +33,32 @@
                         El marketplace creado para emprendedores universitarios.
                         Compra, vende e impulsa tus ideas en una comunidad conectada.
                     </p>
-
                     <p class="mt-3 text-gray-400 font-semibold">
                         Conecta · Emprende · Crece
                     </p>
                 </div>
 
-                <!-- Imagen / espacio para gráfico -->
+                <!-- Imagen / carrito -->
                 <div class="flex justify-center relative">
                     <div class="w-64 h-64 bg-gray-400 rounded-xl flex items-center justify-center">
                         <span class="text-gray-800 font-bold">LOGO</span>
                     </div>
 
-                    <!-- Icono de carrito con contador en la esquina superior derecha del div de la imagen -->
-                    <a href="{{ route('carrito.comprar') }}" class="absolute top-0 right-0 mt-2 mr-2 inline-flex items-center">
-                        <!-- SVG del carrito -->
+                    <!-- Icono carrito -->
+                    <a href="{{ route('carrito.ver') }}" class="relative" id="carrito-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-black" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-9v9m-4-9v9" />
                         </svg>
 
-                        <!-- Contador de productos -->
                         @php
-                        $cantidad = array_sum(session('carrito', [])); // suma todas las unidades del carrito
+                        $contador = app(\App\Http\Controllers\CarritoController::class)->contador();
                         @endphp
-
-                        @if($cantidad > 0)
-                        <span
-                            class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                            {{ $cantidad }}
+                        @if($contador > 0)
+                        <span id="contador-carrito"
+                            class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                            {{ $contador }}
                         </span>
                         @endif
                     </a>
@@ -76,10 +74,8 @@
                 @foreach($productos as $producto)
                 <div class="bg-white rounded-xl shadow p-4 relative flex flex-col">
 
-                    <!-- Nombre -->
                     <h3 class="text-lg font-medium text-black mb-2">{{ $producto->nombre }}</h3>
 
-                    <!-- Imagen horizontal -->
                     <div class="w-full aspect-[16/9] bg-gray-100 flex items-center justify-center rounded-lg overflow-hidden mb-2">
                         @if($producto->imagenes->isNotEmpty())
                         <img src="{{ $producto->imagenes->first()->ruta }}"
@@ -92,14 +88,12 @@
                         @endif
                     </div>
 
-                    <!-- Precio -->
                     <p class="text-gray-600 font-bold text-right mb-3">
                         {{ number_format($producto->precio, 2) }} Bs
                     </p>
 
-                    <!-- Botones -->
                     <div class="flex space-x-2 mt-auto">
-                        <!-- Botón Agregar al carrito -->
+                        <!-- Agregar al carrito -->
                         <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="flex-1">
                             @csrf
                             <button type="submit"
@@ -142,11 +136,46 @@
         <script>
             const searchInput = document.getElementById('searchInput');
             const searchForm = document.getElementById('searchForm');
-
-            // Enviar el formulario cada vez que se escriba
             searchInput.addEventListener('input', function() {
                 searchForm.submit();
             });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const carritoIcon = document.getElementById("carrito-icon");
+
+                document.querySelectorAll("form[action*='carrito/agregar']").forEach(form => {
+                    form.addEventListener("submit", async (e) => {
+                        e.preventDefault();
+
+                        let url = form.action;
+                        let token = form.querySelector('input[name="_token"]').value;
+
+                        let response = await fetch(url, {
+                            method: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": token,
+                                "Accept": "application/json"
+                            }
+                        });
+
+                        if (response.ok) {
+                            let data = await response.json();
+                            let contador = document.getElementById("contador-carrito");
+
+                            if (contador) {
+                                contador.textContent = data.cantidad;
+                            } else if (carritoIcon) {
+                                let span = document.createElement('span');
+                                span.id = "contador-carrito";
+                                span.className = "absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center z-50";
+                                span.textContent = data.cantidad;
+                                carritoIcon.appendChild(span);
+                            }
+                        }
+                    });
+                });
+            });
         </script>
+
     </div>
 </div>

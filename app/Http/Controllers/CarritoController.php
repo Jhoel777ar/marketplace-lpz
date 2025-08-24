@@ -1,60 +1,125 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Producto; // Tu modelo de productos
+
 use Illuminate\Http\Request;
+use App\Models\Carrito;
+use App\Models\CarritoProducto;
+use App\Models\Producto;
+use Illuminate\Support\Facades\Auth;
 
 class CarritoController extends Controller
 {
-    // Mostrar carrito
-    public function comprar()
+
+
+    public function agregar($producto_id)
     {
-        $carrito = session()->get('carrito', []);
-        $productos = Producto::whereIn('id', array_keys($carrito))->get();
+        $user = Auth::user();
 
-        return view('carrito.comprar', compact('carrito', 'productos'));
-    }
+        $carrito = Carrito::firstOrCreate(
+            ['user_id' => $user->id],
+            ['total' => 0]
+        );
 
-    // Agregar producto
-    public function agregar($id)
-    {
-        $carrito = session()->get('carrito', []);
+        $producto = Producto::findOrFail($producto_id);
 
-        if(isset($carrito[$id])){
-            $carrito[$id]++;
+        $carritoProducto = CarritoProducto::where('carrito_id', $carrito->id)
+            ->where('producto_id', $producto->id)
+            ->first();
+
+        if ($carritoProducto) {
+            $carritoProducto->cantidad += 1;
+            $carritoProducto->subtotal = $carritoProducto->cantidad * $producto->precio;
+            $carritoProducto->save();
         } else {
-            $carrito[$id] = 1;
+            CarritoProducto::create([
+                'carrito_id' => $carrito->id,
+                'producto_id' => $producto->id,
+                'cantidad' => 1,
+                'subtotal' => $producto->precio,
+            ]);
         }
 
-        session()->put('carrito', $carrito);
+        $carrito->total = $carrito->productos()->sum('subtotal');
+        $carrito->save();
 
-        return redirect()->back();
+        // ✅ Retornar JSON en vez de redirect
+        return response()->json([
+            'cantidad' => $carrito->productos()->sum('cantidad'),
+            'total' => $carrito->total
+        ]);
     }
+
+
+    public function ver()
+    {
+        $user = Auth::user();
+        $carrito = Carrito::where('user_id', $user->id)->first();
+
+        $productos = [];
+        $cantidadTotal = 0;
+
+        if ($carrito) {
+            $productos = $carrito->productos()->with('producto')->get();
+            $cantidadTotal = $carrito->productos()->sum('cantidad'); // ✅ total de productos
+        }
+
+        return view('carrito.comprar', compact('carrito', 'productos', 'cantidadTotal'));
+    }
+
 
     // Actualizar cantidad
-    public function actualizar(Request $request, $id)
+    public function actualizar(Request $request, $producto_id)
     {
-        $cantidad = $request->input('cantidad');
-        $carrito = session()->get('carrito', []);
+        $user = Auth::user();
+        $carrito = Carrito::where('user_id', $user->id)->firstOrFail();
 
-        if(isset($carrito[$id])){
-            $carrito[$id] = max(1, $cantidad); // mínimo 1
-            session()->put('carrito', $carrito);
-        }
+        $carritoProducto = CarritoProducto::where('carrito_id', $carrito->id)
+            ->where('producto_id', $producto_id)
+            ->firstOrFail();
 
-        return redirect()->back();
+        $cantidad = max(1, (int) $request->cantidad); // mínimo 1
+        $carritoProducto->cantidad = $cantidad;
+        $carritoProducto->subtotal = $cantidad * $carritoProducto->producto->precio;
+        $carritoProducto->save();
+
+        $carrito->total = $carrito->productos()->sum('subtotal');
+        $carrito->save();
+
+        return redirect()->route('carrito.ver');
     }
 
     // Eliminar producto
-    public function eliminar($id)
+    public function eliminar($producto_id)
     {
-        $carrito = session()->get('carrito', []);
+        $user = Auth::user();
+        $carrito = Carrito::where('user_id', $user->id)->firstOrFail();
 
-        if(isset($carrito[$id])){
-            unset($carrito[$id]);
-            session()->put('carrito', $carrito);
+        $carritoProducto = CarritoProducto::where('carrito_id', $carrito->id)
+            ->where('producto_id', $producto_id)
+            ->first();
+
+        if ($carritoProducto) {
+            $carritoProducto->delete();
         }
 
-        return redirect()->back();
+        $carrito->total = $carrito->productos()->sum('subtotal');
+        $carrito->save();
+
+        return redirect()->route('carrito.ver');
+    }
+
+    // 🔥 Nuevo método: contador de productos en carrito
+    public function contador()
+    {
+        $user = Auth::user();
+        $carrito = Carrito::where('user_id', $user->id)->first();
+
+        if (!$carrito) {
+            return 0;
+        }
+
+        // suma total de cantidades de productos
+        return $carrito->productos()->sum('cantidad');
     }
 }
