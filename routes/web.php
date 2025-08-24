@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\CarritoController;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
@@ -21,5 +22,23 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
+
+// Ver carrito
+Route::get('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
+
+// Agregar producto
+Route::post('/carrito/agregar/{id}', [CarritoController::class, 'agregar'])->name('carrito.agregar');
+
+// Actualizar cantidad
+Route::post('/carrito/actualizar/{id}', [CarritoController::class, 'actualizar'])->name('carrito.actualizar');
+
+// Eliminar producto
+Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
+
+
+
+
+
+
 
 require __DIR__.'/auth.php';
