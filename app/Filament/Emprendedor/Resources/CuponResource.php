@@ -22,6 +22,21 @@ class CuponResource extends Resource
     protected static ?string $navigationGroup = 'Descuentos Aplicables';
     protected static ?string $navigationLabel = 'Cupones';
 
+    public static function getNavigationBadge(): ?string
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        return static::getModel()::where('user_id', Auth::id())
+            ->whereColumn('usos_realizados', '<', 'limite_usos')
+            ->where(function ($q) {
+                $q->whereNull('fecha_vencimiento')
+                    ->orWhere('fecha_vencimiento', '>', now());
+            })
+            ->count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -48,6 +63,7 @@ class CuponResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Cupon::ownedBy(auth()->id()))
             ->columns([
                 Tables\Columns\TextColumn::make('codigo')
                     ->searchable()
@@ -81,7 +97,17 @@ class CuponResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('activos')
+                    ->label('Activos')
+                    ->query(
+                        fn(Builder $query) =>
+                        $query->where('user_id', Auth::id())
+                            ->whereColumn('usos_realizados', '<', 'limite_usos')
+                            ->where(function ($q) {
+                                $q->whereNull('fecha_vencimiento')
+                                    ->orWhere('fecha_vencimiento', '>', now());
+                            })
+                    ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

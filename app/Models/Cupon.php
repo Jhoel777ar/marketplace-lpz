@@ -29,4 +29,9 @@ class Cupon extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function scopeOwnedBy($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
 }
