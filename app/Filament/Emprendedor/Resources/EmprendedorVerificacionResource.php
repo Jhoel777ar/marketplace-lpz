@@ -29,6 +29,17 @@ class EmprendedorVerificacionResource extends Resource
     protected static ?string $navigationGroup = 'Verificaciones';
     protected static ?string $navigationLabel = 'Verificar cuenta';
 
+    public static function getNavigationBadge(): ?string
+    {
+        if (!auth()->check()) return null;
+
+        $pendientes = static::getModel()::ownedBy(auth()->id())
+            ->where('is_verified', false)
+            ->count();
+
+        return $pendientes > 0 ? $pendientes : null;
+    }
+
     public static function form(Form $form): Form
     {
         return $form

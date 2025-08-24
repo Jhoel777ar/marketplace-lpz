@@ -39,4 +39,19 @@ class Producto extends Model
     {
         return $query->where('emprendedor_id', $userId);
     }
+
+    public function cupon()
+    {
+        return $this->belongsToMany(Cupon::class, 'cupone_producto')->withPivot('created_at', 'updated_at');
+    }
+
+    public function cuponesActivos()
+    {
+        return $this->belongsToMany(Cupon::class, 'cupone_producto')
+            ->withPivot('created_at', 'updated_at')
+            ->where(function ($query) {
+                $query->whereNull('fecha_vencimiento')
+                    ->orWhere('fecha_vencimiento', '>=', now());
+            });
+    }
 }
