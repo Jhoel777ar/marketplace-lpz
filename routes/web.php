@@ -1,11 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductoController;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/home', [ProductoController::class, 'MostrarProducto'])->name('inicio');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
