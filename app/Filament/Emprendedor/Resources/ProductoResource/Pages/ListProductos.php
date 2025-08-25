@@ -6,6 +6,8 @@ use App\Filament\Emprendedor\Resources\ProductoResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Notifications\Notification;
+use Filament\Resources\Components\Tab;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListProductos extends ListRecords
 {
@@ -32,6 +34,31 @@ class ListProductos extends ListRecords
 
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            Tab::make('Todos')
+                ->badge(ProductoResource::getModel()::ownedBy(auth()->id())->count())
+                ->badgeColor('primary')
+                ->modifyQueryUsing(fn(Builder $query) => $query),
+
+            Tab::make('Destacados')
+                ->badge(ProductoResource::getModel()::ownedBy(auth()->id())->where('destacado', true)->count())
+                ->badgeColor('success')
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('destacado', true)),
+
+            Tab::make('Públicos')
+                ->badge(ProductoResource::getModel()::ownedBy(auth()->id())->where('publico', true)->count())
+                ->badgeColor('info')
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('publico', true)),
+
+            Tab::make('Stock Bajo')
+                ->badge(ProductoResource::getModel()::ownedBy(auth()->id())->where('stock', '<', 10)->count())
+                ->badgeColor('warning')
+                ->modifyQueryUsing(fn(Builder $query) => $query->where('stock', '<', 10)),
         ];
     }
 }
