@@ -280,6 +280,7 @@ class ProductoResource extends Resource
     {
         return [
             RelationManagers\ImagenesRelationManager::class,
+            RelationManagers\ReseñasRelationManager::class,
         ];
     }
 

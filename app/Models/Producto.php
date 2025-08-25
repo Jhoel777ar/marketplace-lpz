@@ -45,6 +45,11 @@ class Producto extends Model
         return $this->belongsToMany(Cupon::class, 'cupone_producto')->withPivot('created_at', 'updated_at');
     }
 
+    public function resenas()
+    {
+        return $this->hasMany(Reseña::class);
+    }
+
     public function cuponesActivos()
     {
         return $this->belongsToMany(Cupon::class, 'cupone_producto')
