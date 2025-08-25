@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fe4ebe8c503f9dee2bc523b78ae7fc3e",
+    "content-hash": "e3c258f921fe894a594dde3116edac7e",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -128,16 +128,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.3",
+            "version": "3.356.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "9c61b26408664c76d51101381bb64feda9bcfe2e"
+                "reference": "7bdc3c73897ae576f7d137dad70bddcd03bd4bd6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9c61b26408664c76d51101381bb64feda9bcfe2e",
-                "reference": "9c61b26408664c76d51101381bb64feda9bcfe2e",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7bdc3c73897ae576f7d137dad70bddcd03bd4bd6",
+                "reference": "7bdc3c73897ae576f7d137dad70bddcd03bd4bd6",
                 "shasum": ""
             },
             "require": {
@@ -219,9 +219,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.3"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.4"
             },
-            "time": "2025-08-22T18:13:45+00:00"
+            "time": "2025-08-25T18:21:17+00:00"
         },
         {
             "name": "bezhansalleh/filament-shield",
@@ -696,35 +696,32 @@
         },
         {
             "name": "devonab/filament-easy-footer",
-            "version": "v1.0.0",
+            "version": "v1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Devonab/filament-easy-footer.git",
-                "reference": "f7e77e8e0a794bdc57f4382b5463b1c85c2ff324"
+                "reference": "0ea32337f40b1f12e4df343ae2dc778387f422e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Devonab/filament-easy-footer/zipball/f7e77e8e0a794bdc57f4382b5463b1c85c2ff324",
-                "reference": "f7e77e8e0a794bdc57f4382b5463b1c85c2ff324",
+                "url": "https://api.github.com/repos/Devonab/filament-easy-footer/zipball/0ea32337f40b1f12e4df343ae2dc778387f422e1",
+                "reference": "0ea32337f40b1f12e4df343ae2dc778387f422e1",
                 "shasum": ""
             },
             "require": {
                 "filament/filament": "^3.0",
-                "php": "^8.1",
+                "php": "^8.1|^8.2|^8.3|^8.4",
                 "spatie/laravel-package-tools": "^1.15.0"
             },
             "require-dev": {
-                "guzzlehttp/guzzle": "^7.8",
+                "larastan/larastan": "^2.9||^3.0",
                 "laravel/pint": "^1.0",
-                "nunomaduro/collision": "^7.9",
-                "nunomaduro/larastan": "^2.0.1",
-                "orchestra/testbench": "^8.0",
-                "pestphp/pest": "^2.1",
-                "pestphp/pest-plugin-arch": "^2.0",
-                "pestphp/pest-plugin-laravel": "^2.0",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan-deprecation-rules": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0"
+                "nunomaduro/collision": "^8.1.1||^7.10.0",
+                "orchestra/testbench": "^10.0.0||^9.0.0||^8.22.0",
+                "pestphp/pest": "^2.20|^3.7",
+                "pestphp/pest-plugin-arch": "^2.0|^v3.0.0",
+                "pestphp/pest-plugin-laravel": "^2.0|^v3.1.0",
+                "pestphp/pest-plugin-livewire": "^2.1|^v3.0.0"
             },
             "type": "library",
             "extra": {
@@ -749,7 +746,6 @@
             "authors": [
                 {
                     "name": "Devonab",
-                    "email": "vable93@gmail.com",
                     "role": "Developer"
                 }
             ],
@@ -757,7 +753,9 @@
             "homepage": "https://github.com/devonab/filament-easy-footer",
             "keywords": [
                 "Devonab",
+                "filament",
                 "filament-easy-footer",
+                "filament-php",
                 "laravel"
             ],
             "support": {
@@ -770,7 +768,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-28T15:47:01+00:00"
+            "time": "2025-05-21T07:49:14+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
