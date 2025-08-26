@@ -50,6 +50,11 @@ class Producto extends Model
         return $this->hasMany(Reseña::class);
     }
 
+    public function ventas()
+    {
+        return $this->hasMany(VentaProducto::class);
+    }
+
     public function cuponesActivos()
     {
         return $this->belongsToMany(Cupon::class, 'cupone_producto')
