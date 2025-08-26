@@ -24,9 +24,10 @@ class ProductoMasVendidosResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('emprendedor_id', auth()->id())
-            ->withCount('ventas', 'resenas')
+            ->withSum('ventas', 'cantidad')
+            ->withCount('resenas')
             ->with(['resenas.usuario'])
-            ->orderByDesc('ventas_count');
+            ->orderByDesc('ventas_sum_cantidad');
     }
 
     public static function table(Table $table): Table
@@ -44,7 +45,7 @@ class ProductoMasVendidosResource extends Resource
                 TextColumn::make('nombre')->label('Producto')->sortable(),
                 TextColumn::make('precio')->money('BOB')->sortable(),
                 TextColumn::make('stock')->sortable(),
-                TextColumn::make('ventas_count')->label('Cantidad Vendida')->sortable(),
+                TextColumn::make('ventas_sum_cantidad')->label('Cantidad Vendida')->sortable(),
                 TextColumn::make('resenas')
                     ->label('Promedio Estrellas')
                     ->formatStateUsing(
