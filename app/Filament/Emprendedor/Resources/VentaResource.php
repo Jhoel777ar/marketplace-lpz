@@ -21,6 +21,15 @@ class VentaResource extends Resource
     protected static ?string $navigationLabel = 'Pedidos';
     protected static ?string $pluralLabel = 'Pedidos';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return Venta::whereIn('estado', ['pendiente', 'preparando', 'enviado'])
+            ->whereHas('productos.producto', function ($query) {
+                $query->where('emprendedor_id', auth()->id());
+            })
+            ->count();
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
