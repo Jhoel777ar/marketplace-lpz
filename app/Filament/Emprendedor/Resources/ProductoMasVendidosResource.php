@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\HtmlColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\Facades\Auth;
 
 class ProductoMasVendidosResource extends Resource
 {
@@ -20,13 +21,25 @@ class ProductoMasVendidosResource extends Resource
     protected static ?string $navigationLabel = 'Productos Más Vendidos';
     protected static ?string $pluralLabel = 'Productos Más Vendidos';
 
+    public static function getNavigationBadge(): ?string
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+        return (string) Producto::where('emprendedor_id', Auth::id())
+            ->withSum('ventas', 'cantidad')
+            ->get()
+            ->sum('ventas_sum_cantidad');
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
             ->where('emprendedor_id', auth()->id())
-            ->withCount('ventas', 'resenas')
+            ->withSum('ventas', 'cantidad')
+            ->withCount('resenas')
             ->with(['resenas.usuario'])
-            ->orderByDesc('ventas_count');
+            ->orderByDesc('ventas_sum_cantidad');
     }
 
     public static function table(Table $table): Table
@@ -44,7 +57,7 @@ class ProductoMasVendidosResource extends Resource
                 TextColumn::make('nombre')->label('Producto')->sortable(),
                 TextColumn::make('precio')->money('BOB')->sortable(),
                 TextColumn::make('stock')->sortable(),
-                TextColumn::make('ventas_count')->label('Cantidad Vendida')->sortable(),
+                TextColumn::make('ventas_sum_cantidad')->label('Cantidad Vendida')->sortable(),
                 TextColumn::make('resenas')
                     ->label('Promedio Estrellas')
                     ->formatStateUsing(
