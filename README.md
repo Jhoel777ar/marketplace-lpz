@@ -209,7 +209,7 @@ php artisan make:seeder NombreSeeder
 
 ## 👥 Equipo Stark-Next
 
-- **Joel Andres ** - Scrum Master, Desarrollador Backend
+- **Joel Andres** - Scrum Master, Desarrollador Backend
 - **Shamir Erick Condori Troche** - Desarrollador Frontend, Diseñador UX
 - **Luis Fernando Villca Mamani** - Diseñador UI, Desarrollador Backend
 - **Leonardo Fidel Arana Isita** - Diseñador UX, Desarrollador Frontend
