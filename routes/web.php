@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\TestVentaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,3 +26,5 @@ Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->na
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
 require __DIR__.'/auth.php';
+
+Route::get('/test-venta', [TestVentaController::class, 'create'])->middleware('auth');
