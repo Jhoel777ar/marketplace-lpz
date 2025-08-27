@@ -40,7 +40,7 @@
                 <!-- Imagen / espacio para gráfico -->
                 <div class="flex justify-center relative">
                     <div class="w-64 h-64 bg-gray-400 rounded-xl flex items-center justify-center">
-                        <span class="text-gray-800 font-bold">Logo de Chamir Perra</span>
+                        <span class="text-gray-800 font-bold">LOGO</span>
                     </div>
 
                     <!-- Icono de carrito con contador en la esquina superior derecha del div de la imagen -->

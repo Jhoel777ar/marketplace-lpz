@@ -41,6 +41,24 @@ return new class extends Migration
                 ['producto_id', 'categoria_id']
             );
         });
+        Schema::create('cupones', function (Blueprint $table) {
+            $table->id();
+            $table->string('codigo')->unique();
+            $table->decimal('descuento', 5, 2)->comment('Porcentaje de descuento, ejemplo 10 = 10%');
+            $table->integer('limite_usos')->default(1);
+            $table->integer('usos_realizados')->default(0);
+            $table->timestamp('fecha_vencimiento')->nullable();
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->onDelete('cascade');
+            $table->timestamps();
+        });
+        Schema::create('cupone_producto', function (Blueprint $table) {
+            $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
+            $table->foreignId('cupon_id')->constrained('cupones')->onDelete('cascade');
+            $table->primary(['producto_id', 'cupon_id']);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -48,6 +66,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('cupones');
         Schema::dropIfExists('categoria_producto');
         Schema::dropIfExists('categorias');
         Schema::dropIfExists('producto_imagenes');

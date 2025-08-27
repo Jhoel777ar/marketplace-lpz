@@ -116,6 +116,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <div class="flex items-center justify-end">
             <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
         </div>
+         <div class="flex items-center justify-center">
+            <flux:link :href="route('auth.google')" variant="outline" class="w-full text-center">
+                {{ __('Continuar con Google') }}
+            </flux:link>
+        </div>
     </form>
 
     @if (Route::has('register'))

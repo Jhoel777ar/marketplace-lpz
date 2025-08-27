@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\Summarizers\Count;
+use App\Models\Cupon;
 
 class ProductoResource extends Resource
 {
@@ -94,37 +95,49 @@ class ProductoResource extends Resource
                     ->default(now()),
                 Forms\Components\Hidden::make('emprendedor_id')
                     ->default(fn() => Auth::id()),
-                Forms\Components\Repeater::make('imagenes')
+                Forms\Components\FileUpload::make('imagenes')
                     ->label('Imágenes del Producto')
-                    ->relationship()
-                    ->maxItems(5)
-                    ->schema([
-                        Forms\Components\FileUpload::make('ruta')
-                            ->disk('s3')
-                            ->directory('productos')
-                            ->image()
-                            ->visibility('public')
-                            ->maxSize(4096)
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'])
-                            ->required(),
-                    ])
+                    ->disk('s3')
+                    ->directory('productos')
+                    ->image()
+                    ->visibility('public')
+                    ->maxSize(4096)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/webp'])
+                    ->multiple()
+                    ->maxFiles(5)
+                    ->required()
                     ->columnSpan('full')
                     ->visible(fn($record) => $record === null),
-                //solo para entonos prueba
-                /*
-                Forms\Components\Repeater::make('imagenes')
-                    ->label('Imágenes del Producto')
-                    ->relationship()
-                    ->maxItems(5)
+                Forms\Components\Section::make('Cupón')
                     ->schema([
-                        Forms\Components\TextInput::make('ruta')
-                            ->label('URL de la Imagen')
-                            ->placeholder('https://example.com/imagen.jpg')
-                            ->url()
-                            ->required(),
+                        Forms\Components\Select::make('cupon_id')
+                            ->label('Aplicar Cupón')
+                            ->placeholder('Seleccione un cupón (opcional)')
+                            ->options(function () {
+                                return Cupon::where('user_id', Auth::id())
+                                    ->where(function ($query) {
+                                        $query->whereNull('fecha_vencimiento')
+                                            ->orWhere('fecha_vencimiento', '>=', now());
+                                    })
+                                    ->get()
+                                    ->mapWithKeys(fn($cupon) => [
+                                        $cupon->id => "{$cupon->codigo} ({$cupon->descuento}%)"
+                                    ])->toArray();
+                            })
+                            ->searchable()
+                            ->columnSpan('full')
+                            ->helperText('Opcional: selecciona un cupón para aplicar a este producto.')
+                            ->disabled(fn($record) => $record && $record->cuponesActivos()->exists()),
+                        Forms\Components\Placeholder::make('cupon_activo')
+                            ->label('Cupón Activo')
+                            ->content(fn($record) => $record && $record->cuponesActivos()->exists()
+                                ? $record->cuponesActivos->map(fn($c) => "{$c->codigo} ({$c->descuento}%) - Vence: " .
+                                    ($c->fecha_vencimiento ? \Carbon\Carbon::parse($c->fecha_vencimiento)->format('d/m/Y') : 'Sin fecha'))
+                                ->join(', ')
+                                : 'No hay cupón activo')
+                            ->visible(fn($record) => $record && $record->cuponesActivos()->exists()),
                     ])
-                    ->columnSpan('full'),
-                */
+                    ->columns(1),
                 Forms\Components\Section::make('Fechas del Producto')
                     ->description('Información de creación y última actualización')
                     ->columns(2)
@@ -267,6 +280,7 @@ class ProductoResource extends Resource
     {
         return [
             RelationManagers\ImagenesRelationManager::class,
+            RelationManagers\ReseñasRelationManager::class,
         ];
     }
 

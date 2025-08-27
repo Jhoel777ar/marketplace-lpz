@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CarritoController;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\TestVentaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
+<<<<<<< HEAD
 // Ver carrito
 Route::get('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
 
@@ -40,5 +43,13 @@ Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->n
 
 
 
+=======
+// Rutas para Google Login
+Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+>>>>>>> origin/main
 
 require __DIR__.'/auth.php';
+
+Route::get('/test-venta', [TestVentaController::class, 'create'])->middleware('auth');
+Route::get('/test-resena', [\App\Http\Controllers\TestReseñaController::class, 'create'])->middleware('auth');
