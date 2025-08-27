@@ -28,3 +28,4 @@ Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCa
 require __DIR__.'/auth.php';
 
 Route::get('/test-venta', [TestVentaController::class, 'create'])->middleware('auth');
+Route::get('/test-resena', [\App\Http\Controllers\TestReseñaController::class, 'create'])->middleware('auth');
