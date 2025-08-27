@@ -12,9 +12,8 @@ class TestVentaController extends Controller
 {
     public function create()
     {
-        // Simula creación venta (ajusta IDs reales)
-        $buyer = User::find(1); // Comprador
-        $producto = Producto::where('emprendedor_id', auth()->id())->first(); // Producto de emprendedor logueado
+        $buyer = User::find(1);
+        $producto = Producto::where('emprendedor_id', auth()->id())->first();
         $venta = Venta::create([
             'user_id' => $buyer->id,
             'total' => $producto->precio,
@@ -28,7 +27,6 @@ class TestVentaController extends Controller
             'subtotal' => $producto->precio,
         ]);
 
-        // Notifica emprendedores
         $emprendedores = $venta->productos->pluck('producto.emprendedor_id')->unique();
         foreach ($emprendedores as $emprendedor_id) {
             $emprendedor = User::find($emprendedor_id);
