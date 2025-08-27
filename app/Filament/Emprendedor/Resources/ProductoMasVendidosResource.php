@@ -4,6 +4,7 @@ namespace App\Filament\Emprendedor\Resources;
 
 use App\Filament\Emprendedor\Resources\ProductoMasVendidosResource\Pages;
 use App\Models\Producto;
+use App\Models\VentaProducto;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -12,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\HtmlColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductoMasVendidosResource extends Resource
 {
@@ -26,10 +28,13 @@ class ProductoMasVendidosResource extends Resource
         if (!Auth::check()) {
             return null;
         }
-        return (string) Producto::where('emprendedor_id', Auth::id())
-            ->withSum('ventas', 'cantidad')
-            ->get()
-            ->sum('ventas_sum_cantidad');
+        $ventasCount = VentaProducto::query()
+            ->whereHas('producto', function ($query) {
+                $query->where('emprendedor_id', Auth::id());
+            })
+            ->selectRaw('COUNT(DISTINCT venta_id) as total')
+            ->value('total');
+        return $ventasCount ? (string) $ventasCount : '0';
     }
 
     public static function getEloquentQuery(): Builder
@@ -37,6 +42,11 @@ class ProductoMasVendidosResource extends Resource
         return parent::getEloquentQuery()
             ->where('emprendedor_id', auth()->id())
             ->withSum('ventas', 'cantidad')
+            ->withCount([
+                'ventas as ventas_unicas_count' => function ($query) {
+                    $query->select(DB::raw('COUNT(DISTINCT venta_id)'));
+                }
+            ])
             ->withCount('resenas')
             ->with(['resenas.usuario'])
             ->orderByDesc('ventas_sum_cantidad');
@@ -58,6 +68,12 @@ class ProductoMasVendidosResource extends Resource
                 TextColumn::make('precio')->money('BOB')->sortable(),
                 TextColumn::make('stock')->sortable(),
                 TextColumn::make('ventas_sum_cantidad')->label('Cantidad Vendida')->sortable(),
+                TextColumn::make('ventas_ids')
+                    ->label('Ventas ID')
+                    ->getStateUsing(function ($record) {
+                        $ids = $record->ventas()->pluck('venta_id')->unique()->toArray();
+                        return $ids ? implode(', ', $ids) : 'Sin ventas';
+                    }),
                 TextColumn::make('resenas')
                     ->label('Promedio Estrellas')
                     ->formatStateUsing(
