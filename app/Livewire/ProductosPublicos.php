@@ -20,11 +20,25 @@ class ProductosPublicos extends Component
         'orderBy' => ['except' => 'recientes'],
     ];
 
+    protected $listeners = [
+        'echo:products,ProductChanged' => 'loadProducts',
+    ];
+
+    public function mount()
+    {
+        $this->loadProducts();
+    }
+
     public function updating($property)
     {
         if (in_array($property, ['search', 'priceMin', 'priceMax', 'orderBy'])) {
             $this->resetPage();
         }
+    }
+
+    public function loadProducts()
+    {
+        $this->render();
     }
 
     public function render()

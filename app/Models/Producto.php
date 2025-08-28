@@ -64,4 +64,19 @@ class Producto extends Model
                     ->orWhere('fecha_vencimiento', '>=', now());
             });
     }
+
+    protected static function booted()
+    {
+        static::created(function ($product) {
+            event(new \App\Events\ProductChanged($product, 'created'));
+        });
+
+        static::updated(function ($product) {
+            event(new \App\Events\ProductChanged($product, 'updated'));
+        });
+
+        static::deleted(function ($product) {
+            event(new \App\Events\ProductChanged($product, 'deleted'));
+        });
+    }
 }
