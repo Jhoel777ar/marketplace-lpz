@@ -29,3 +29,7 @@ require __DIR__.'/auth.php';
 
 Route::get('/test-venta', [TestVentaController::class, 'create'])->middleware('auth');
 Route::get('/test-resena', [\App\Http\Controllers\TestReseñaController::class, 'create'])->middleware('auth');
+
+use App\Livewire\ProductoDetalle;
+
+Route::get('/productos/{producto}', ProductoDetalle::class)->name('productos.detalle');
