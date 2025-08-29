@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class Producto extends Model
 {
@@ -78,5 +79,10 @@ class Producto extends Model
         static::deleted(function ($product) {
             event(new \App\Events\ProductChanged($product, 'deleted'));
         });
+    }
+
+    protected function setDescripcionAttribute($value)
+    {
+        $this->attributes['descripcion'] = Str::sanitize($value);
     }
 }

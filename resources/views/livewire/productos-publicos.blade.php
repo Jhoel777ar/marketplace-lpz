@@ -88,7 +88,8 @@
                             icon="shopping-cart">
                             Agregar
                         </flux:button>
-                        <flux:button variant="outline" color="neutral" size="sm"
+                        <flux:button as="a" href="{{ route('productos.detalle', $producto->id) }}"
+                            variant="outline" color="neutral" size="sm"
                             class="flex-1 text-sm border-[#262626] text-gray-300 hover:bg-[#262626]/50">
                             Ver
                         </flux:button>
