@@ -47,11 +47,16 @@
             <!-- Contenido -->
             <main class=" mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- Productos -->
+<<<<<<< Updated upstream
                 <section class="col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($productos as $producto)
                         <div class="bg-white rounded-xl shadow p-4 relative">
                             <!-- Nombre -->
                             <h3 class="text-lg font-medium text-black">{{ $producto->nombre }}</h3>
+=======
+                <section id="productos" class="col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <x-productos :productos="$productos" />
+>>>>>>> Stashed changes
 
                             <!-- Imagen: primera imagen o placeholder -->
                             @if($producto->imagenes->isNotEmpty())
