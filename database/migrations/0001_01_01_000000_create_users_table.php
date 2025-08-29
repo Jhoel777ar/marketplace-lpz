@@ -21,8 +21,6 @@ return new class extends Migration
             $table->string('semestre')->nullable();
             $table->string('carrera')->nullable();
             $table->string('google_id')->nullable()->unique();
-            $table->string('given_name')->nullable()->after('name');
-            $table->string('family_name')->nullable()->after('given_name');
             $table->rememberToken();
             $table->timestamps();
         });
