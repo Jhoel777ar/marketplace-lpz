@@ -44,20 +44,7 @@
                     @endforeach
                 </div>
             </div>
-            <div class="mt-6">
-                <h2 class="text-lg font-bold">Reseñas</h2>
-                @forelse($producto->resenas as $resena)
-                    <div class="mt-3 p-4 border border-gray-200 dark:border-[#262626] rounded-xl">
-                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            {{ $resena->usuario->name }}
-                        </p>
-                        <p class="text-sm text-yellow-500">⭐ {{ $resena->calificacion_producto }}/5</p>
-                        <p class="text-gray-600 dark:text-gray-400">{{ $resena->reseña }}</p>
-                    </div>
-                @empty
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Este producto no tiene reseñas aún.</p>
-                @endforelse
-            </div>
+            <livewire:resenas-producto :producto="$producto" />
             <div class="mt-8 border-t border-gray-300 dark:border-[#262626] pt-6">
                 <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-white">Compartir este producto</h2>
 
