@@ -11,22 +11,20 @@ use Illuminate\Support\Facades\Auth;
 class CarritoController extends Controller
 {
 
-
-    public function agregar($producto_id)
+    public function agregar(Request $request, $producto_id)
     {
         $user = Auth::user();
-
         $carrito = Carrito::firstOrCreate(
             ['user_id' => $user->id],
             ['total' => 0]
         );
-
+    
         $producto = Producto::findOrFail($producto_id);
-
+    
         $carritoProducto = CarritoProducto::where('carrito_id', $carrito->id)
             ->where('producto_id', $producto->id)
             ->first();
-
+    
         if ($carritoProducto) {
             $carritoProducto->cantidad += 1;
             $carritoProducto->subtotal = $carritoProducto->cantidad * $producto->precio;
@@ -39,16 +37,22 @@ class CarritoController extends Controller
                 'subtotal' => $producto->precio,
             ]);
         }
-
+    
         $carrito->total = $carrito->productos()->sum('subtotal');
         $carrito->save();
-
-        // ✅ Retornar JSON en vez de redirect
-        return response()->json([
-            'cantidad' => $carrito->productos()->sum('cantidad'),
-            'total' => $carrito->total
-        ]);
+    
+        // ✅ Si es AJAX (fetch), responde JSON
+        if ($request->expectsJson()) {
+            return response()->json([
+                'cantidad' => $carrito->productos()->sum('cantidad'),
+                'total'    => $carrito->total
+            ]);
+        }
+    
+        // ✅ Si es formulario normal, redirige con mensaje
+        return back()->with('success', 'Producto agregado al carrito');
     }
+    
 
 
     public function ver()

@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/carrito', [CarritoController::class, 'ver'])->name('carrito.ver');
     Route::post('/carrito/actualizar/{id}', [CarritoController::class, 'actualizar'])->name('carrito.actualizar');
     Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
-    Route::get('/carrito/contador', [CarritoController::class, 'contadorJson'])->name('carrito.contador');
+    //Route::get('/carrito/contador', [CarritoController::class, 'contadorJson'])->name('carrito.contador');
 });
 
 
@@ -51,3 +51,7 @@ require __DIR__.'/auth.php';
 
 Route::get('/test-venta', [TestVentaController::class, 'create'])->middleware('auth');
 Route::get('/test-resena', [\App\Http\Controllers\TestReseñaController::class, 'create'])->middleware('auth');
+
+use App\Livewire\ProductoDetalle;
+
+Route::get('/productos/{producto}', ProductoDetalle::class)->name('productos.detalle');

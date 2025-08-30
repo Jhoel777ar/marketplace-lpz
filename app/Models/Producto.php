@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class Producto extends Model
 {
@@ -63,5 +64,25 @@ class Producto extends Model
                 $query->whereNull('fecha_vencimiento')
                     ->orWhere('fecha_vencimiento', '>=', now());
             });
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($product) {
+            event(new \App\Events\ProductChanged($product, 'created'));
+        });
+
+        static::updated(function ($product) {
+            event(new \App\Events\ProductChanged($product, 'updated'));
+        });
+
+        static::deleted(function ($product) {
+            event(new \App\Events\ProductChanged($product, 'deleted'));
+        });
+    }
+
+    protected function setDescripcionAttribute($value)
+    {
+        $this->attributes['descripcion'] = Str::sanitize($value);
     }
 }
