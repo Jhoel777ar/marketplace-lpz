@@ -1,23 +1,27 @@
 <div wire:key="productos-publicos-component" class="flex flex-col gap-8 p-4 md:p-6 max-w-7xl mx-auto">
+    @livewire('carrito-manager')
     <div
         class="backdrop-blur-lg bg-white/80 dark:bg-[#171717] border border-gray-200 dark:border-[#262626] rounded-2xl p-5 shadow-xl shadow-black/10 dark:shadow-black/20 transition-all duration-300">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-            <div class="flex flex-wrap gap-3 items-center">
-                <div class="relative flex-1 min-w-48">
-                    <flux:input type="text" placeholder="Buscar productos..." wire:model.live="search"
-                        icon="magnifying-glass"
+            <div class="flex items-center gap-4">
+                <div class="flex flex-wrap gap-3 items-center">
+                    <div class="relative flex-1 min-w-48">
+                        <flux:input type="text" placeholder="Buscar productos..." wire:model.live="search"
+                            icon="magnifying-glass"
+                            class="backdrop-blur-sm bg-gray-100/70 dark:bg-[#262626]/70 border border-gray-200 dark:border-[#262626] 
+                       text-gray-800 dark:text-white placeholder:text-gray-400 focus:ring-1 focus:ring-primary/30" />
+                    </div>
+                    <flux:select wire:model.live="orderBy" icon="bars-arrow-up"
                         class="backdrop-blur-sm bg-gray-100/70 dark:bg-[#262626]/70 border border-gray-200 dark:border-[#262626] 
-                               text-gray-800 dark:text-white placeholder:text-gray-400 focus:ring-1 focus:ring-primary/30" />
+                   text-gray-800 dark:text-white min-w-48">
+                        <option value="recientes">Más recientes</option>
+                        <option value="precio_asc">Precio: menor a mayor</option>
+                        <option value="precio_desc">Precio: mayor a menor</option>
+                        <option value="popularidad">Más populares</option>
+                    </flux:select>
                 </div>
-                <flux:select wire:model.live="orderBy" icon="bars-arrow-up"
-                    class="backdrop-blur-sm bg-gray-100/70 dark:bg-[#262626]/70 border border-gray-200 dark:border-[#262626] 
-                           text-gray-800 dark:text-white min-w-48">
-                    <option value="recientes">Más recientes</option>
-                    <option value="precio_asc">Precio: menor a mayor</option>
-                    <option value="precio_desc">Precio: mayor a menor</option>
-                    <option value="popularidad">Más populares</option>
-                </flux:select>
             </div>
+
             <div class="flex flex-wrap gap-3 items-center text-sm font-medium text-gray-700 dark:text-gray-300">
                 <span>Precio:</span>
                 <flux:input type="number" placeholder="Mín" wire:model.live.debounce.300ms="priceMin" step="0.01"
@@ -96,9 +100,9 @@
                     </div>
                     <div class="mt-auto pt-5 flex gap-2">
                         <flux:button wire:click="$dispatch('agregarAlCarrito', { id: {{ $producto->id }} })"
-                            variant="filled" color="slate" size="sm"
+                            color="slate" size="sm"
                             class="flex-1 text-sm bg-gray-200 hover:bg-gray-300 dark:bg-[#262626] dark:hover:bg-[#333] border border-gray-300 dark:border-[#333]"
-                            icon="shopping-cart">
+                            icon="shopping-cart" x-on:click="$dispatch('agregando')">
                             Agregar
                         </flux:button>
                         <flux:button as="a" href="{{ route('productos.detalle', $producto->id) }}"
@@ -116,6 +120,23 @@
                 <p class="text-gray-500 dark:text-gray-400 text-lg">No se encontraron productos.</p>
             </div>
         @endforelse
+        <div x-data="{ show: false }" x-show="show" x-transition.opacity.duration.300ms x-cloak
+            x-on:agregando.window="show = true; setTimeout(() => show = false, 1500);"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md">
+            <div
+                class="flex flex-col items-center justify-center px-8 py-6 rounded-2xl shadow-2xl 
+               bg-gradient-to-r from-gray-900/80 to-black/80 dark:from-black/80 dark:to-black/80 
+               text-white border border-white/20 backdrop-blur-xl animate-fade-in">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white animate-spin mb-3" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+                        stroke-dasharray="60" stroke-linecap="round" />
+                </svg>
+                <span class="text-xl font-bold tracking-wide text-center">
+                    Agregando al carrito...
+                </span>
+            </div>
+        </div>
     </div>
 
     <div class="mt-6 flex justify-center" wire:loading.remove>
