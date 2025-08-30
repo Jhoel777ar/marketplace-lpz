@@ -99,24 +99,24 @@
                 {{ $resena->reseña }}
             </p>
             @if (Auth::id() === $resena->user_id)
-                <div class="absolute top-3 right-3 flex gap-2">
+                <div class="mt-3 sm:absolute sm:top-3 sm:right-3 flex flex-wrap gap-2">
                     <button wire:click="edit({{ $resena->id }})"
                         class="text-sm px-3 py-1 rounded-2xl font-semibold
-           text-gray-800 dark:text-white
-           bg-yellow-400/20 dark:bg-yellow-400/30
-           border border-yellow-400/30 dark:border-yellow-400/50
-           hover:bg-yellow-400/30 dark:hover:bg-yellow-400/50
-           backdrop-blur-md shadow-md transition-all duration-300">
+                   text-gray-800 dark:text-white
+                   bg-yellow-400/20 dark:bg-yellow-400/30
+                   border border-yellow-400/30 dark:border-yellow-400/50
+                   hover:bg-yellow-400/30 dark:hover:bg-yellow-400/50
+                   backdrop-blur-md shadow-md transition-all duration-300">
                         Editar
                     </button>
 
                     <button wire:click="delete({{ $resena->id }})"
                         class="text-sm px-3 py-1 rounded-2xl font-semibold
-           text-gray-800 dark:text-white
-           bg-red-500/20 dark:bg-red-500/30
-           border border-red-500/30 dark:border-red-500/50
-           hover:bg-red-500/30 dark:hover:bg-red-500/50
-           backdrop-blur-md shadow-md transition-all duration-300">
+                   text-gray-800 dark:text-white
+                   bg-red-500/20 dark:bg-red-500/30
+                   border border-red-500/30 dark:border-red-500/50
+                   hover:bg-red-500/30 dark:hover:bg-red-500/50
+                   backdrop-blur-md shadow-md transition-all duration-300">
                         Eliminar
                     </button>
                 </div>
