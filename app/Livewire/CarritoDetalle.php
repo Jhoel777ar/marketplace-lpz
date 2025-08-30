@@ -76,4 +76,9 @@ class CarritoDetalle extends Component
             'total' => $this->total,
         ]);
     }
+
+    public function comprarAhora()
+    {
+        return redirect()->route('metodo.pago');
+    }
 }

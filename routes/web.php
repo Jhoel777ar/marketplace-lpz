@@ -39,3 +39,9 @@ use App\Livewire\CarritoDetalle;
 Route::middleware(['auth'])->group(function () {
     Route::get('/carrito', CarritoDetalle::class)->name('carrito');
 });
+
+use App\Livewire\MetodoPago;
+Route::middleware(['auth'])->group(function () {
+    Route::get('/metodo-pago', MetodoPago::class)->name('metodo.pago');
+});
+
