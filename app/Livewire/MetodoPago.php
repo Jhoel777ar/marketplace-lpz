@@ -3,14 +3,12 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Carrito;
-use App\Models\Cupon;
+use App\Models\{Carrito, CarritoProducto, Producto, Cupon, Venta, VentaProducto, Envio};
 use Illuminate\Support\Facades\Auth;
-use Exception;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use Exception;
 
 class MetodoPago extends Component
 {
@@ -18,36 +16,32 @@ class MetodoPago extends Component
     public $items;
     public $subtotal = 0;
     public $total = 0;
-
-    /** @var \Illuminate\Support\Collection */
+    public $codigoCupon = '';
     public $cuponesAplicados;
 
-    public $codigoCupon = '';
+    public $direccion, $ciudad, $departamento, $codigo_postal;
+
+    public $paso = 0;
 
     public function mount()
     {
-        $this->carrito = Carrito::with('productos.producto.cuponesActivos')
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
-
         $this->cuponesAplicados = collect();
         $this->cargarDatos();
     }
 
     public function cargarDatos()
     {
-        $this->items = $this->carrito->productos()->with('producto.cuponesActivos')->get();
+        $this->carrito = Carrito::with('productos.producto')
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $this->items = $this->carrito->productos()->with('producto')->get();
         $this->subtotal = $this->items->sum('subtotal');
         $this->calcularTotal();
     }
 
     public function aplicarCupon()
     {
-        if ($this->cuponesAplicados->count() >= 2) {
-            $this->dispatch('alerta', type: 'error', message: 'Solo puedes aplicar 2 cupones máximo.');
-            return;
-        }
-
         $cupon = Cupon::where('codigo', $this->codigoCupon)
             ->where(function ($q) {
                 $q->whereNull('fecha_vencimiento')
@@ -56,26 +50,31 @@ class MetodoPago extends Component
             ->first();
 
         if (!$cupon) {
-            $this->dispatch('alerta', type: 'error', message: 'Cupón no válido.');
+            $this->dispatch('alerta', type: 'error', message: 'Cupón no válido o vencido.');
             return;
         }
-        $producto = $this->items->first(fn($item) => $item->producto->cuponesActivos->contains('id', $cupon->id));
+
+        if ($cupon->usos_realizados >= $cupon->limite_usos) {
+            $this->dispatch('alerta', type: 'error', message: 'Cupón ya alcanzó su límite de usos.');
+            return;
+        }
+
+        $producto = $this->items->first(fn($i) => $i->producto->cuponesActivos->contains('id', $cupon->id));
 
         if (!$producto) {
-            $this->dispatch('alerta', type: 'error', message: 'Cupón no aplica a productos en tu carrito.');
+            $this->dispatch('alerta', type: 'error', message: 'Cupón no aplica a tu carrito.');
             return;
         }
-        if ($this->cuponesAplicados->contains('producto_id', $producto->id)) {
-            $this->dispatch('alerta', type: 'error', message: 'Ya aplicaste un cupón en ese producto.');
-            return;
-        }
+
         $this->cuponesAplicados->push((object)[
-            'producto_id' => $producto->id,
+            'producto_id' => $producto->producto_id,
             'codigo' => $cupon->codigo,
             'descuento' => $cupon->descuento,
+            'cupon_id' => $cupon->id,
         ]);
-        $this->dispatch('alerta', type: 'success', message: 'Cupón aplicado.');
+
         $this->calcularTotal();
+        $this->dispatch('alerta', type: 'success', message: 'Cupón aplicado.');
     }
 
     public function calcularTotal()
@@ -83,7 +82,7 @@ class MetodoPago extends Component
         $this->total = $this->subtotal;
 
         foreach ($this->cuponesAplicados as $cupon) {
-            $item = $this->items->firstWhere('id', $cupon->producto_id);
+            $item = $this->items->firstWhere('producto_id', $cupon->producto_id);
             if ($item) {
                 $descuento = ($item->subtotal * $cupon->descuento) / 100;
                 $this->total -= $descuento;
@@ -91,33 +90,98 @@ class MetodoPago extends Component
         }
     }
 
-    public function render()
-    {
-        return view('livewire.metodo-pago');
-    }
-
     public function pagarConStripe($token)
     {
+        $this->validate([
+            'direccion' => 'required|string|max:255',
+            'ciudad' => 'required|string|max:100',
+            'departamento' => 'required|string|max:100',
+            'codigo_postal' => 'nullable|string|max:20',
+        ], [
+            'direccion.required' => 'La dirección es obligatoria.',
+            'ciudad.required' => 'La ciudad es obligatoria.',
+            'departamento.required' => 'El departamento es obligatorio.',
+        ]);
+
+        $user = Auth::user();
+        DB::beginTransaction();
+
         try {
+            $this->paso = 1;
+            foreach ($this->items as $item) {
+                $producto = Producto::where('id', $item->producto_id)->lockForUpdate()->first();
+
+                if ($producto->stock < $item->cantidad) {
+                    DB::rollBack();
+                    $this->dispatch('alerta', type: 'error', message: "Stock insuficiente para {$producto->nombre}");
+                    return;
+                }
+            }
+
+            $this->paso = 2;
+
             Stripe::setApiKey(env('STRIPE_SECRET'));
             $paymentIntent = PaymentIntent::create([
                 'amount' => intval($this->total * 100),
                 'currency' => config('cashier.currency'),
                 'payment_method_types' => ['card'],
-                'description' => "Depósito desde Tu ex Market por " . auth()->user()->name,
-                'receipt_email' => auth()->user()->email,
+                'description' => "Compra en Marketplace de " . $user->name,
+                'receipt_email' => $user->email,
                 'payment_method_data' => [
                     'type' => 'card',
-                    'card' => [
-                        'token' => $token,
-                    ],
+                    'card' => ['token' => $token],
                 ],
                 'confirm' => true,
             ]);
 
-            $this->dispatch('alerta', type: 'success', message: 'Pago realizado con éxito!');
-        } catch (\Exception $e) {
+            $this->paso = 3;
+
+            $venta = Venta::create([
+                'user_id' => $user->id,
+                'total' => $this->total,
+                'estado' => 'pagado',
+            ]);
+
+            foreach ($this->items as $item) {
+                VentaProducto::create([
+                    'venta_id' => $venta->id,
+                    'producto_id' => $item->producto_id,
+                    'cantidad' => $item->cantidad,
+                    'subtotal' => $item->subtotal,
+                ]);
+
+                $item->producto->decrement('stock', $item->cantidad);
+            }
+
+            Envio::create([
+                'venta_id' => $venta->id,
+                'direccion' => $this->direccion,
+                'ciudad' => $this->ciudad,
+                'departamento' => $this->departamento,
+                'codigo_postal' => $this->codigo_postal,
+                'estado' => 'pendiente',
+            ]);
+
+            foreach ($this->cuponesAplicados as $c) {
+                Cupon::where('id', $c->cupon_id)->increment('usos_realizados');
+            }
+
+            $this->carrito->productos()->delete();
+            $this->carrito->update(['total' => 0]);
+
+            DB::commit();
+            $this->paso = 4;
+
+            $this->dispatch('alerta', type: 'success', message: 'Compra realizada con éxito!');
+            $this->dispatch('compraExitosa');
+        } catch (Exception $e) {
+            DB::rollBack();
             $this->dispatch('alerta', type: 'error', message: $e->getMessage());
         }
+    }
+
+    public function render()
+    {
+        return view('livewire.metodo-pago');
     }
 }

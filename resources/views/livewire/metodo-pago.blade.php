@@ -62,15 +62,14 @@
                     </div>
                 </div>
             </div>
-
         </div>
+
         <div class="px-6 py-6 flex flex-col sm:flex-row justify-between gap-3 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/40 dark:bg-[rgb(23,23,23)] backdrop-blur-sm"
             id="botones-section">
             <a href="{{ route('carrito') }}"
                 class="w-full sm:w-auto text-center bg-transparent hover:bg-white/20 dark:hover:bg-white/10 text-gray-800 dark:text-gray-100 font-semibold rounded-2xl px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-md hover:shadow-lg backdrop-blur-md transition-all duration-200 flex items-center justify-center gap-2">
                 <i class="fas fa-arrow-left text-sm"></i> Volver al carrito
             </a>
-
             <button id="pagarAhora"
                 class="w-full sm:w-auto text-center bg-transparent hover:bg-white/20 dark:hover:bg-white/10 text-gray-800 dark:text-gray-100 font-semibold rounded-2xl px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-md hover:shadow-lg backdrop-blur-md transition-all duration-200 flex items-center justify-center gap-2">
                 <i class="fas fa-lock text-sm"></i> Pagar ahora
@@ -92,23 +91,88 @@
 
             <button id="confirmarPago"
                 class="mt-4 w-full rounded-2xl px-6 py-3 font-semibold
-           bg-green-600/30 dark:bg-green-700/30
-           backdrop-blur-md
-           text-white
-           border border-green-500/50
-           hover:bg-green-600/50 dark:hover:bg-green-700/50
-           shadow-lg hover:shadow-2xl
-           transition-all duration-300
-           hover:scale-105 active:scale-95
-           focus:outline-none focus:ring-4 focus:ring-green-400/60">
+       bg-green-600/30 dark:bg-green-700/30
+       backdrop-blur-md
+       text-white
+       border border-green-500/50
+       hover:bg-green-600/50 dark:hover:bg-green-700/50
+       shadow-lg hover:shadow-2xl
+       transition-all duration-300
+       hover:scale-105 active:scale-95
+       focus:outline-none focus:ring-4 focus:ring-green-400/60">
                 Finalizar Compra
             </button>
 
         </div>
 
+        @if ($paso >= 0)
+            <div class="w-full max-w-3xl mx-auto mt-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center">
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-full 
+                    {{ $paso >= 0 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                                0
+                            </div>
+                            <div class="ml-2 font-medium">Inicio</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 text-center">
+                        <div class="flex items-center">
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-full 
+                    {{ $paso >= 1 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                                1
+                            </div>
+                            <div class="ml-2 font-medium">Verificando stock</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 text-center">
+                        <div class="flex items-center">
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-full 
+                    {{ $paso >= 2 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                                2
+                            </div>
+                            <div class="ml-2 font-medium">Procesando pago</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 text-center">
+                        <div class="flex items-center">
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-full 
+                    {{ $paso >= 3 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                                3
+                            </div>
+                            <div class="ml-2 font-medium">Confirmando</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 text-right">
+                        <div class="flex items-center justify-end">
+                            <div
+                                class="w-10 h-10 flex items-center justify-center rounded-full 
+                    {{ $paso >= 4 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                                4
+                            </div>
+                            <div class="ml-2 font-medium">Éxito</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full transition-all duration-500"
+                        style="width: {{ (($paso + 1) / 5) * 100 }}%"></div>
+                </div>
+            </div>
+        @endif
+
     </div>
 </div>
-<script src="https://js.stripe.com/v3/"></script>
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
