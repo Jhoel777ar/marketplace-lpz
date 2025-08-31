@@ -41,7 +41,7 @@ class Producto extends Model
         return $query->where('emprendedor_id', $userId);
     }
 
-    public function cupon()
+    public function cupones()
     {
         return $this->belongsToMany(Cupon::class, 'cupone_producto')->withPivot('created_at', 'updated_at');
     }

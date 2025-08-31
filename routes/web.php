@@ -37,6 +37,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/carrito/actualizar/{id}', [CarritoController::class, 'actualizar'])->name('carrito.actualizar');
     Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
     //Route::get('/carrito/contador', [CarritoController::class, 'contadorJson'])->name('carrito.contador');
+
+    Route::post('/carrito/aplicar-cupon', [App\Http\Controllers\CarritoController::class, 'aplicarCupon'])->name('carrito.aplicarCupon');
+
 });
 
 
