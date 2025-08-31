@@ -19,9 +19,15 @@
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
+
         <flux:navlist.item icon="shopping-cart" :href="route('carrito')" :current="request()->routeIs('carrito')"
             wire:navigate>
             {{ __('Mi Carrito') }}
+        </flux:navlist.item>
+
+        <flux:navlist.item icon="shopping-bag" :href="route('mis.compras')" :current="request()->routeIs('mis.compras')"
+            wire:navigate>
+            {{ __('Mis Compras') }}
         </flux:navlist.item>
 
         <flux:spacer />
@@ -104,7 +110,8 @@
                 <flux:menu.separator />
 
                 <flux:menu.radio.group>
-                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}
+                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
+                        {{ __('Settings') }}
                     </flux:menu.item>
                 </flux:menu.radio.group>
 
