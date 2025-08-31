@@ -121,7 +121,7 @@
                 Total a pagar: Bs. {{ number_format($total, 2) }}
             </div>
 
-            <button id="confirmarPago"
+            <button id="confirmarPago" wire:click="pagarConStripe(tokenId)" wire:loading.attr="disabled"
                 class="mt-4 w-full rounded-2xl px-6 py-3 font-semibold
        bg-green-600/30 dark:bg-green-700/30
        backdrop-blur-md
@@ -132,7 +132,8 @@
        transition-all duration-300
        hover:scale-105 active:scale-95
        focus:outline-none focus:ring-4 focus:ring-green-400/60">
-                Finalizar Compra
+                <span wire:loading.remove>Finalizar Compra</span>
+                <span wire:loading>Procesando...</span>
             </button>
 
         </div>

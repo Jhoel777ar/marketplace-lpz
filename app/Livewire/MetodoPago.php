@@ -113,6 +113,7 @@ class MetodoPago extends Component
             'ciudad.required' => 'La ciudad es obligatoria.',
             'departamento.required' => 'El departamento es obligatorio.',
             'pais.required' => 'El país es obligatorio.',
+            'codigo_postal.required' => 'El código postal es obligatorio.',
         ]);
 
         $user = Auth::user();
