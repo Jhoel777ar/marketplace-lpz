@@ -104,7 +104,7 @@ class MetodoPago extends Component
                 'amount' => intval($this->total * 100),
                 'currency' => config('cashier.currency'),
                 'payment_method_types' => ['card'],
-                'description' => "Deposit From Nafezly by " . auth()->user()->name,
+                'description' => "Depósito desde Tu ex Market por " . auth()->user()->name,
                 'receipt_email' => auth()->user()->email,
                 'payment_method_data' => [
                     'type' => 'card',
