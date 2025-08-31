@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\CheckoutController;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\TestVentaController;
@@ -37,6 +38,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/carrito/actualizar/{id}', [CarritoController::class, 'actualizar'])->name('carrito.actualizar');
     Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
     //Route::get('/carrito/contador', [CarritoController::class, 'contadorJson'])->name('carrito.contador');
+
+    Route::post('/carrito/aplicar-cupon', [App\Http\Controllers\CarritoController::class, 'aplicarCupon'])->name('carrito.aplicarCupon');
+    // Checkout
+    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+    // Success page after Stripe redirect
+    Route::get('/payments/success', [CheckoutController::class, 'success'])->name('payments.success');
+
 });
 
 
