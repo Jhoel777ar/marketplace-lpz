@@ -45,3 +45,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/metodo-pago', MetodoPago::class)->name('metodo.pago');
 });
 
+
+use App\Livewire\MisCompras;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/mis-compras', MisCompras::class)->name('mis.compras');
+});

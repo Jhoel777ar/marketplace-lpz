@@ -27,12 +27,12 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 mt-4 md:mt-0">
-                    <input type="number" min="1"
+                    <input type="number" min="1" max="{{ $item->producto->stock }}"
                         wire:change="actualizarCantidad({{ $item->id }}, $event.target.value)"
                         value="{{ $item->cantidad }}"
                         class="w-16 border border-gray-300 dark:border-[rgb(38,38,38)] rounded-2xl p-2 text-center text-gray-900 dark:text-gray-100 
-                           bg-white/50 dark:bg-[rgb(23,23,23)]/70 backdrop-blur-sm shadow-inner 
-                           focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-all duration-300" />
+              bg-white/50 dark:bg-[rgb(23,23,23)]/70 backdrop-blur-sm shadow-inner 
+              focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-all duration-300" />
                     <p class="font-semibold text-gray-900 dark:text-gray-100 text-lg">Bs.
                         {{ number_format($item->subtotal, 2) }}</p>
                     <button wire:click="eliminar({{ $item->id }})"
@@ -48,25 +48,26 @@
     </div>
     <div
         class="mt-6 flex flex-col md:flex-row justify-between items-center gap-4 
-                bg-white/30 dark:bg-[rgb(23,23,23)]/90 backdrop-blur-xl border border-gray-200 dark:border-[rgb(38,38,38)] rounded-2xl shadow-2xl p-4 transition-colors duration-500">
+            bg-white/30 dark:bg-[rgb(23,23,23)]/90 backdrop-blur-xl border border-gray-200 dark:border-[rgb(38,38,38)] rounded-2xl shadow-2xl p-4 transition-colors duration-500">
 
         <div class="font-bold text-2xl text-gray-900 dark:text-gray-100">
             Total: Bs. {{ number_format($total, 2) }}
         </div>
 
-        <button x-data="{ verificando: false }"
-            @click="verificando = true; $wire.comprarAhora(); setTimeout(() => verificando = false, 7000)"
-            class="flex items-center gap-2 px-6 py-3 rounded-2xl text-white
+        @if ($items->count() > 0)
+            <button x-data="{ verificando: false }"
+                @click="verificando = true; $wire.comprarAhora(); setTimeout(() => verificando = false, 7000)"
+                class="flex items-center gap-2 px-6 py-3 rounded-2xl text-white
            bg-gray-900/60 dark:bg-gray-500/20 backdrop-blur-lg
            border border-gray-300 dark:border-gray-600 shadow-xl
            hover:scale-105 transition-transform duration-300">
-            <template x-if="!verificando">
-                <span><i class="fas fa-shopping-cart"></i> Comprar ahora</span>
-            </template>
-            <template x-if="verificando">
-                <span>Verificando...</span>
-            </template>
-        </button>
+                <template x-if="!verificando">
+                    <span><i class="fas fa-shopping-cart"></i> Comprar ahora</span>
+                </template>
+                <template x-if="verificando">
+                    <span>Verificando...</span>
+                </template>
+            </button>
+        @endif
     </div>
-
 </div>

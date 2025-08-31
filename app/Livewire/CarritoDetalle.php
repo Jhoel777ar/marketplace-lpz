@@ -17,28 +17,27 @@ class CarritoDetalle extends Component
         $this->carrito = Carrito::with(['productos.producto.imagenes', 'productos.producto.resenas'])
             ->where('user_id', Auth::id())
             ->firstOrFail();
-        $this->limpiarCarritoInvalido();
+
+        $this->ajustarCantidadesSegunStock();
         $this->calcularTotal();
     }
 
     public function actualizarCantidad($id, $cantidad)
     {
         $item = CarritoProducto::findOrFail($id);
-
+        if ($cantidad > $item->producto->stock) {
+            $cantidad = $item->producto->stock;
+            $this->dispatch('alerta', type: 'info', message: 'Cantidad ajustada al stock disponible.');
+        }
         if ($cantidad <= 0) {
             $item->delete();
         } else {
-            if ($item->producto->stock < $cantidad) {
-                $this->dispatch('alerta', type: 'error', message: 'No hay stock suficiente.');
-                return;
-            }
             $item->cantidad = $cantidad;
             $item->subtotal = $cantidad * $item->producto->precio;
             $item->save();
         }
-
-        $this->limpiarCarritoInvalido();
         $this->calcularTotal();
+        $this->carrito->load('productos.producto.imagenes', 'productos.producto.resenas');
     }
 
     public function eliminar($id)
@@ -53,11 +52,19 @@ class CarritoDetalle extends Component
         $this->carrito->update(['total' => $this->total]);
     }
 
-    public function limpiarCarritoInvalido()
+    public function ajustarCantidadesSegunStock()
     {
         foreach ($this->carrito->productos as $item) {
             if (!$item->producto->publico || $item->producto->stock <= 0) {
                 $item->delete();
+                continue;
+            }
+            if ($item->cantidad > $item->producto->stock) {
+                $item->cantidad = $item->producto->stock;
+                $item->subtotal = $item->cantidad * $item->producto->precio;
+                $item->save();
+
+                $this->dispatch('alerta', type: 'info', message: "La cantidad de '{$item->producto->nombre}' se ajustó al stock disponible.");
             }
         }
         $this->carrito->load('productos.producto.imagenes', 'productos.producto.resenas');
