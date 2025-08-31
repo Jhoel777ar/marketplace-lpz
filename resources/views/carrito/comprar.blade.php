@@ -106,7 +106,8 @@
             </div>
 
             <button class="w-full bg-black text-white py-3 rounded-lg mt-6 hover:bg-gray-800 font-medium">Finalizar compra</button>
-            <button class="w-full border border-gray-400 text-blue-600 py-3 rounded-lg mt-3 hover:bg-gray-100 font-medium">PayPal</button>
+            <!-- PayPal Button Placeholder -->
+            <button class="w-full border border-gray-400 text-blue-600 py-3 rounded-lg mt-3 hover:bg-gray-100 font-medium">Stripe</button>
         </div>
     </div>
 
