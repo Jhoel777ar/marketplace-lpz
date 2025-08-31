@@ -17,17 +17,27 @@
                 Bs. {{ number_format($producto->precio, 2) }}
             </p>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Stock: {{ $producto->stock }}</p>
-            @if ($producto->imagenes->count())
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-                    @foreach ($producto->imagenes->take(5) as $img)
+            @php
+                $imagenes = $producto->imagenes->take(5);
+                $imagenDefault =
+                    'https://png.pngtree.com/png-vector/20230224/ourmid/pngtree-image-icone-png-image_6617630.png';
+            @endphp
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+                @if ($imagenes->count())
+                    @foreach ($imagenes as $img)
                         <div class="relative group overflow-hidden rounded-xl bg-gray-100 dark:bg-[#262626]">
-                            <img src="{{ $img->ruta }}"
+                            <img src="{{ $img->ruta ?? $imagenDefault }}"
                                 class="w-full h-40 md:h-48 object-cover transform group-hover:scale-105 transition-transform duration-500 cursor-zoom-in"
-                                onclick="openImageModal('{{ $img->ruta }}')" />
+                                onclick="openImageModal('{{ $img->ruta ?? $imagenDefault }}')" />
                         </div>
                     @endforeach
-                </div>
-            @endif
+                @else
+                    <div class="relative group overflow-hidden rounded-xl bg-gray-100 dark:bg-[#262626]">
+                        <img src="{{ $imagenDefault }}"
+                            class="w-full h-40 md:h-48 object-cover transition-transform duration-500" />
+                    </div>
+                @endif
+            </div>
             <div class="prose dark:prose-invert max-w-none">
                 {!! $producto->descripcion !!}
             </div>
@@ -43,6 +53,32 @@
                         </span>
                     @endforeach
                 </div>
+            </div>
+            <div class="mt-6 flex flex-wrap gap-3">
+                <button wire:click="agregarAlCarrito"
+                    class="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-sm
+               font-semibold text-white
+               bg-green-500/20 dark:bg-green-500/30
+               border border-green-500/30 dark:border-green-500/50
+               backdrop-blur-md shadow-md
+               hover:bg-green-500/30 dark:hover:bg-green-500/50
+               transition-all duration-300
+               w-full md:w-auto">
+                    <i class="fas fa-cart-plus"></i>
+                    Agregar al carrito
+                </button>
+                <a href="{{ route('carrito') }}"
+                    class="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-sm
+              font-semibold text-gray-800 dark:text-white
+              bg-gray-200/30 dark:bg-gray-700/30
+              border border-gray-300 dark:border-gray-600
+              backdrop-blur-md shadow-md
+              hover:bg-gray-300/40 dark:hover:bg-gray-600/50
+              transition-all duration-300
+              w-full md:w-auto">
+                    <i class="fas fa-shopping-basket"></i>
+                    Ir al carrito
+                </a>
             </div>
             <livewire:resenas-producto :producto="$producto" />
             <div class="mt-8 border-t border-gray-300 dark:border-[#262626] pt-6">
