@@ -51,14 +51,46 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">Dirección de Envío</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="col-span-1 sm:col-span-2">
+                            <label class="block mb-1 text-gray-700 dark:text-gray-300 font-medium">País</label>
+                            <select wire:model.defer="pais"
+                                class="w-full rounded-2xl border p-3 dark:bg-[rgb(38,38,38)] dark:text-gray-100">
+                                <option value="">Seleccione un país</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Perú">Perú</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Venezuela">Venezuela</option>
+                            </select>
+                            @error('pais')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
                         <input wire:model.defer="direccion" type="text" placeholder="Dirección completa"
                             class="rounded-2xl border p-3 dark:bg-[rgb(38,38,38)] dark:text-gray-100">
+                        @error('direccion')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                         <input wire:model.defer="ciudad" type="text" placeholder="Ciudad"
                             class="rounded-2xl border p-3 dark:bg-[rgb(38,38,38)] dark:text-gray-100">
+                        @error('ciudad')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                         <input wire:model.defer="departamento" type="text" placeholder="Departamento"
                             class="rounded-2xl border p-3 dark:bg-[rgb(38,38,38)] dark:text-gray-100">
+                        @error('departamento')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                         <input wire:model.defer="codigo_postal" type="text" placeholder="Código postal"
                             class="rounded-2xl border p-3 dark:bg-[rgb(38,38,38)] dark:text-gray-100">
+                        @error('codigo_postal')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -107,63 +139,58 @@
 
         @if ($paso >= 0)
             <div class="w-full max-w-3xl mx-auto mt-6 mb-6">
-                <div class="flex items-center justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div class="flex-1">
-                        <div class="flex items-center">
+                        <div class="flex items-center sm:justify-start justify-center">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full 
-                    {{ $paso >= 0 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                        {{ $paso >= 0 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
                                 0
                             </div>
                             <div class="ml-2 font-medium">Inicio</div>
                         </div>
                     </div>
-
                     <div class="flex-1 text-center">
-                        <div class="flex items-center">
+                        <div class="flex items-center justify-center sm:justify-start">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full 
-                    {{ $paso >= 1 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                        {{ $paso >= 1 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
                                 1
                             </div>
                             <div class="ml-2 font-medium">Verificando stock</div>
                         </div>
                     </div>
-
                     <div class="flex-1 text-center">
-                        <div class="flex items-center">
+                        <div class="flex items-center justify-center sm:justify-start">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full 
-                    {{ $paso >= 2 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                        {{ $paso >= 2 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
                                 2
                             </div>
                             <div class="ml-2 font-medium">Procesando pago</div>
                         </div>
                     </div>
-
                     <div class="flex-1 text-center">
-                        <div class="flex items-center">
+                        <div class="flex items-center justify-center sm:justify-start">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full 
-                    {{ $paso >= 3 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                        {{ $paso >= 3 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
                                 3
                             </div>
                             <div class="ml-2 font-medium">Confirmando</div>
                         </div>
                     </div>
-
-                    <div class="flex-1 text-right">
-                        <div class="flex items-center justify-end">
+                    <div class="flex-1 sm:text-right text-center">
+                        <div class="flex items-center justify-center sm:justify-end">
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full 
-                    {{ $paso >= 4 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
+                        {{ $paso >= 4 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700' }}">
                                 4
                             </div>
                             <div class="ml-2 font-medium">Éxito</div>
                         </div>
                     </div>
                 </div>
-
                 <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
                     <div class="bg-green-500 h-2 rounded-full transition-all duration-500"
                         style="width: {{ (($paso + 1) / 5) * 100 }}%"></div>

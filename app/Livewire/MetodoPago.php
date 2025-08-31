@@ -19,7 +19,7 @@ class MetodoPago extends Component
     public $codigoCupon = '';
     public $cuponesAplicados;
 
-    public $direccion, $ciudad, $departamento, $codigo_postal;
+    public $direccion, $ciudad, $departamento, $codigo_postal, $pais;
 
     public $paso = 0;
 
@@ -27,6 +27,17 @@ class MetodoPago extends Component
     {
         $this->cuponesAplicados = collect();
         $this->cargarDatos();
+        $productosSinStock = $this->items->filter(fn($item) => $item->producto->stock < $item->cantidad);
+        if ($productosSinStock->isNotEmpty()) {
+            foreach ($productosSinStock as $item) {
+                $this->dispatch(
+                    'alerta',
+                    type: 'warning',
+                    message: "El producto '{$item->producto->nombre}' tiene stock insuficiente. Ajuste la cantidad."
+                );
+            }
+            $this->paso = 0;
+        }
     }
 
     public function cargarDatos()
@@ -44,10 +55,8 @@ class MetodoPago extends Component
     {
         $cupon = Cupon::where('codigo', $this->codigoCupon)
             ->where(function ($q) {
-                $q->whereNull('fecha_vencimiento')
-                    ->orWhere('fecha_vencimiento', '>=', now());
-            })
-            ->first();
+                $q->whereNull('fecha_vencimiento')->orWhere('fecha_vencimiento', '>=', now());
+            })->first();
 
         if (!$cupon) {
             $this->dispatch('alerta', type: 'error', message: 'Cupón no válido o vencido.');
@@ -59,22 +68,23 @@ class MetodoPago extends Component
             return;
         }
 
-        $producto = $this->items->first(fn($i) => $i->producto->cuponesActivos->contains('id', $cupon->id));
-
-        if (!$producto) {
+        $productosAplicables = $this->items->filter(fn($i) => $i->producto->cuponesActivos->contains('id', $cupon->id));
+        if ($productosAplicables->isEmpty()) {
             $this->dispatch('alerta', type: 'error', message: 'Cupón no aplica a tu carrito.');
             return;
         }
 
-        $this->cuponesAplicados->push((object)[
-            'producto_id' => $producto->producto_id,
-            'codigo' => $cupon->codigo,
-            'descuento' => $cupon->descuento,
-            'cupon_id' => $cupon->id,
-        ]);
+        foreach ($productosAplicables as $producto) {
+            $this->cuponesAplicados->push((object)[
+                'producto_id' => $producto->producto_id,
+                'codigo' => $cupon->codigo,
+                'descuento' => $cupon->descuento,
+                'cupon_id' => $cupon->id,
+            ]);
+        }
 
         $this->calcularTotal();
-        $this->dispatch('alerta', type: 'success', message: 'Cupón aplicado.');
+        $this->dispatch('alerta', type: 'success', message: 'Cupón aplicado a los productos correspondientes.');
     }
 
     public function calcularTotal()
@@ -97,10 +107,12 @@ class MetodoPago extends Component
             'ciudad' => 'required|string|max:100',
             'departamento' => 'required|string|max:100',
             'codigo_postal' => 'nullable|string|max:20',
+            'pais' => 'required|string|max:100',
         ], [
             'direccion.required' => 'La dirección es obligatoria.',
             'ciudad.required' => 'La ciudad es obligatoria.',
             'departamento.required' => 'El departamento es obligatorio.',
+            'pais.required' => 'El país es obligatorio.',
         ]);
 
         $user = Auth::user();
@@ -113,8 +125,12 @@ class MetodoPago extends Component
 
                 if ($producto->stock < $item->cantidad) {
                     DB::rollBack();
-                    $this->dispatch('alerta', type: 'error', message: "Stock insuficiente para {$producto->nombre}");
-                    return;
+                    $this->dispatch(
+                        'alerta',
+                        type: 'error',
+                        message: "El producto '{$producto->nombre}' ya fue vendido a otro usuario. Stock disponible: {$producto->stock}."
+                    );
+                    return redirect()->route('carrito');
                 }
             }
 
@@ -158,6 +174,7 @@ class MetodoPago extends Component
                 'direccion' => $this->direccion,
                 'ciudad' => $this->ciudad,
                 'departamento' => $this->departamento,
+                'pais' => $this->pais,
                 'codigo_postal' => $this->codigo_postal,
                 'estado' => 'pendiente',
             ]);
