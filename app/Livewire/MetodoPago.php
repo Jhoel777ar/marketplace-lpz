@@ -6,6 +6,11 @@ use Livewire\Component;
 use App\Models\Carrito;
 use App\Models\Cupon;
 use Illuminate\Support\Facades\Auth;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
 
 class MetodoPago extends Component
 {
@@ -89,5 +94,30 @@ class MetodoPago extends Component
     public function render()
     {
         return view('livewire.metodo-pago');
+    }
+
+    public function pagarConStripe($token)
+    {
+        try {
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+            $paymentIntent = PaymentIntent::create([
+                'amount' => intval($this->total * 100),
+                'currency' => config('cashier.currency'),
+                'payment_method_types' => ['card'],
+                'description' => "Deposit From Nafezly by " . auth()->user()->name,
+                'receipt_email' => auth()->user()->email,
+                'payment_method_data' => [
+                    'type' => 'card',
+                    'card' => [
+                        'token' => $token,
+                    ],
+                ],
+                'confirm' => true,
+            ]);
+
+            $this->dispatch('alerta', type: 'success', message: 'Pago realizado con éxito!');
+        } catch (\Exception $e) {
+            $this->dispatch('alerta', type: 'error', message: $e->getMessage());
+        }
     }
 }

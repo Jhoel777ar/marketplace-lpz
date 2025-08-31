@@ -47,40 +47,48 @@
         @endif
         <div class="px-6 py-6 border-t border-gray-100 dark:border-gray-700/50">
             <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Pago con Tarjeta</h3>
-            <div
-                class="relative rounded-2xl border border-gray-300 dark:border-gray-600 dark:bg-[rgb(38,38,38)]/70 p-4 shadow-inner flex items-center mb-4 backdrop-blur-sm">
-                <input type="text" inputmode="numeric" name="number" placeholder="1234 1234 1234 1234"
-                    autocomplete="cc-number" maxlength="19" pattern="[0-9 ]*"
-                    class="w-full bg-transparent text-gray-900 dark:text-white text-lg placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\d{4})/g, '$1 ').trim().slice(0, 19)">
-                <div class="flex space-x-2 ml-3">
-                    <svg class="w-8 h-5 opacity-70" viewBox="0 0 24 16" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <rect width="24" height="16" rx="2" fill="#FFF" stroke="#DDD" />
-                        <path
-                            d="M2.788 5.914A7.201 7.201 0 0 0 1 5.237l.028-.125h2.737c.371.013.672.125.77.519l.595 2.836.182.854 1.666-4.21h1.799l-2.674 6.167H4.304L2.788 5.914Z"
-                            fill="#1434CB" />
-                    </svg>
-                    <svg class="w-8 h-5 opacity-70" viewBox="0 0 24 16" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <rect width="24" height="16" rx="2" fill="#252525" />
-                        <circle cx="9" cy="8" r="5" fill="#eb001b" />
-                        <circle cx="15" cy="8" r="5" fill="#f79e1b" />
-                        <path d="M12 4c1.214.912 2 2.364 2 4s-.786 3.088-2 4c-1.214-.912-2-2.364-2-4s.786-3.088 2-4z"
-                            fill="#ff5f00" />
-                    </svg>
-                </div>
+            <div id="card-element"
+                class="rounded-2xl border border-gray-300 dark:border-gray-600 dark:bg-[rgb(38,38,38)]/70 p-4 shadow-inner">
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input type="text" placeholder="MM/YY" autocomplete="cc-exp" maxlength="5"
-                    pattern="(0[1-9]|1[0-2])\/[0-9]{2}"
-                    class="rounded-2xl border border-gray-300 dark:border-gray-600 dark:bg-[rgb(38,38,38)] dark:text-gray-100 p-3 shadow-inner focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-500/40 outline-none transition-all text-lg backdrop-blur-sm"
-                    oninput="formatExpiry(this)">
-                <input type="text" placeholder="CVC" autocomplete="cc-csc" inputmode="numeric" maxlength="4"
-                    pattern="[0-9]{3,4}"
-                    class="rounded-2xl border border-gray-300 dark:border-gray-600 dark:bg-[rgb(38,38,38)] dark:text-gray-100 p-3 shadow-inner focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-500/40 outline-none transition-all text-lg backdrop-blur-sm"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)">
-            </div>
+            <div id="card-errors" role="alert" class="text-red-500 mt-2"></div>
+            <script src="https://js.stripe.com/v3/"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const stripe = Stripe("{{ env('STRIPE_KEY') }}");
+                    const elements = stripe.elements();
+                    const style = {
+                        base: {
+                            color: "#fff",
+                            fontSize: "16px",
+                            "::placeholder": {
+                                color: "#888"
+                            }
+                        },
+                        invalid: {
+                            color: "#f44336"
+                        }
+                    };
+                    const card = elements.create("card", {
+                        style: style
+                    });
+                    card.mount("#card-element");
+                    const pagarBtn = document.getElementById('pagarAhora');
+                    if (pagarBtn) {
+                        pagarBtn.addEventListener('click', async () => {
+                            const {
+                                token,
+                                error
+                            } = await stripe.createToken(card);
+
+                            if (error) {
+                                document.getElementById('card-errors').textContent = error.message;
+                            } else {
+                                @this.pagarConStripe(token.id);
+                            }
+                        });
+                    }
+                });
+            </script>
         </div>
         <div
             class="px-6 py-6 flex flex-col sm:flex-row justify-between gap-3 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/40 dark:bg-[rgb(23,23,23)] backdrop-blur-sm">
@@ -89,7 +97,7 @@
                 <i class="fas fa-arrow-left text-sm"></i>
                 Volver al carrito
             </a>
-            <button
+            <button id="pagarAhora"
                 class="w-full sm:w-auto text-center bg-transparent hover:bg-white/20 dark:hover:bg-white/10 text-gray-800 dark:text-gray-100 font-semibold rounded-2xl px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-md hover:shadow-lg backdrop-blur-md transition-all duration-200 flex items-center justify-center gap-2">
                 <i class="fas fa-lock text-sm"></i>
                 Pagar ahora
