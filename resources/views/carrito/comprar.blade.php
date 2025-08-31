@@ -85,6 +85,23 @@
         <div class="bg-white rounded-xl shadow p-6 h-fit border border-gray-200">
             <h2 class="text-xl font-bold mb-6">Resumen</h2>
 
+            <!-- Campo de cupón -->
+            <div class="mb-6">
+                <label for="coupon" class="block text-sm font-medium text-gray-700 mb-2">¿Tienes un código de descuento?</label>
+                <div class="flex">
+                    <input type="text" id="coupon" name="coupon"
+                        class="flex-1 border border-gray-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                        placeholder="Ingresa tu cupón">
+                    <button type="button"
+                        class="bg-black text-white px-4 rounded-r-lg hover:bg-gray-800">
+                        Aplicar
+                    </button>
+                </div>
+                @if(session('coupon_message'))
+                <p class="text-sm text-green-600 mt-2">{{ session('coupon_message') }}</p>
+                @endif
+            </div>
+
             <div class="flex justify-between mb-4 text-gray-600">
                 <span>Subtotal</span>
                 <span>{{ number_format($carrito->total ?? 0,2) }} Bs</span>
@@ -108,7 +125,7 @@
             <button class="w-full bg-black text-white py-3 rounded-lg mt-6 hover:bg-gray-800 font-medium">Finalizar compra</button>
             <button class="w-full border border-gray-400 text-blue-600 py-3 rounded-lg mt-3 hover:bg-gray-100 font-medium">PayPal</button>
         </div>
-    </div>
+
 
 </body>
 

@@ -29,7 +29,8 @@
             </div>
 
 
-            <header class="flex justify-between items-center py-4 px-6">
+            <header class="flex justify-between items-center py-4 px-6 bg-[#171717]">
+
                 <!-- Icono carrito -->
                 <a href="{{ route('carrito.ver') }}" class="relative" id="carrito-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24"
@@ -49,6 +50,7 @@
                     @endif
                 </a>
             </header>
+
 
 
         </div>

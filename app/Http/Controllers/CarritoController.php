@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CarritoController extends Controller
 {
-
     public function agregar(Request $request, $producto_id)
     {
         $user = Auth::user();
@@ -52,25 +51,23 @@ class CarritoController extends Controller
         // ✅ Si es formulario normal, redirige con mensaje
         return back()->with('success', 'Producto agregado al carrito');
     }
-    
-
 
     public function ver()
     {
         $user = Auth::user();
         $carrito = Carrito::where('user_id', $user->id)->first();
 
-        $productos = [];
+        $productos = collect(); // colección vacía
         $cantidadTotal = 0;
 
         if ($carrito) {
-            $productos = $carrito->productos()->with('producto')->get();
-            $cantidadTotal = $carrito->productos()->sum('cantidad'); // ✅ total de productos
+            // ✅ Paginación para evitar error con ->links()
+            $productos = $carrito->productos()->with('producto')->paginate(5);
+            $cantidadTotal = $carrito->productos()->sum('cantidad');
         }
 
         return view('carrito.comprar', compact('carrito', 'productos', 'cantidadTotal'));
     }
-
 
     // Actualizar cantidad
     public function actualizar(Request $request, $producto_id)
