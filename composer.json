@@ -23,6 +23,7 @@
         "martinpetricko/filament-sentry-feedback": "^1.0",
         "pusher/pusher-php-server": "^7.2",
         "sentry/sentry-laravel": "^4.15",
+        "stripe/stripe-php": "^16.6",
         "swisnl/filament-backgrounds": "^1.1"
     },
     "require-dev": {

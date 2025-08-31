@@ -33,3 +33,15 @@ Route::get('/test-resena', [\App\Http\Controllers\TestReseñaController::class, 
 use App\Livewire\ProductoDetalle;
 
 Route::get('/productos/{producto}', ProductoDetalle::class)->name('productos.detalle');
+
+use App\Livewire\CarritoDetalle;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/carrito', CarritoDetalle::class)->name('carrito');
+});
+
+use App\Livewire\MetodoPago;
+Route::middleware(['auth'])->group(function () {
+    Route::get('/metodo-pago', MetodoPago::class)->name('metodo.pago');
+});
+
