@@ -20,6 +20,11 @@ return new class extends Migration
             $table->string('ubicacion')->nullable();
             $table->string('semestre')->nullable();
             $table->string('carrera')->nullable();
+<<<<<<< Updated upstream
+=======
+            $table->string('google_id')->nullable()->unique();
+
+>>>>>>> Stashed changes
             $table->rememberToken();
             $table->timestamps();
         });
