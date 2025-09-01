@@ -92,7 +92,8 @@
                 {{ $producto->nombre }}
             </h2>
             <p class="font-bold text-lg text-gray-200 mt-1">Bs. {{ number_format($producto->precio, 2) }}</p>
-            <p class="text-sm text-gray-400 mt-1">Stock: {{ $producto->stock }}</p>
+            <!-- Se asigna un id específico por producto para actualizar solo este nodo desde JS -->
+            <p id="stock-{{ $producto->id }}" class="text-sm text-gray-400 mt-1">Stock: {{ $producto->stock }}</p>
             @if ($producto->emprendedor)
             <p class="text-sm text-gray-300 mt-2">Vendedor: {{ $producto->emprendedor->name }}</p>
             <p class="text-sm text-gray-400">Ubicación: {{ $producto->emprendedor->ubicacion }}</p>
@@ -134,6 +135,27 @@
     </div>
     @endforelse
 </div>
+<!--
+  Listener en el cliente para el event dispatchBrowserEvent('producto-stock-actualizado', ...)
+  Cuando Livewire recibe el broadcast del servidor (ProductChanged) dispara ese evento
+  en el navegador. Aquí únicamente actualizamos el texto del elemento con id
+  `stock-{id}` para evitar recargar toda la vista.
+-->
+<script>
+    window.addEventListener('producto-stock-actualizado', function (e) {
+        try {
+            var id = e.detail.producto_id;
+            var stock = e.detail.stock;
+            var el = document.getElementById('stock-' + id);
+            if (el) {
+                // Actualizamos exclusivamente el contenido de stock
+                el.textContent = 'Stock: ' + stock;
+            }
+        } catch (err) {
+            console.warn('Error actualizando stock en DOM', err);
+        }
+    });
+</script>
 <div class="mt-6 flex justify-center" wire:loading.remove>
     <div
         class="inline-flex items-center space-x-0 rounded-xl bg-[#171717] border border-[#262626] p-1 backdrop-blur-sm shadow-lg">

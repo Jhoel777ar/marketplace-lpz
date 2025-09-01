@@ -24,6 +24,31 @@ class ProductosPublicos extends Component
         'echo:products,ProductChanged' => 'loadProducts',
     ];
 
+    public function loadProducts($payload = null)
+    {
+        // Este método se llama cuando llega un broadcast 'ProductChanged' por Echo
+        // El payload normalmente contiene una clave 'product' con los atributos del modelo.
+        // Aquí extraemos id y stock y disparamos un evento en el navegador para que
+        // la vista (JS) actualice únicamente el texto del stock sin recargar.
+        if (is_array($payload) && isset($payload['product'])) {
+            $product = $payload['product'];
+            // El payload puede variar según la serialización; intentamos obtener id y stock
+            $id = $product['id'] ?? ($product['product']['id'] ?? null);
+            $stock = $product['stock'] ?? ($product['product']['stock'] ?? null);
+            if ($id !== null && $stock !== null) {
+                // Dispatch a browser event que la vista escucha para actualizar el DOM
+                $this->dispatchBrowserEvent('producto-stock-actualizado', [
+                    'producto_id' => $id,
+                    'stock' => $stock,
+                ]);
+            }
+        }
+
+        // También forzamos re-render server-side para mantener consistencia en paginación
+        // y filtros si fuera necesario.
+        $this->render();
+    }
+
     public function mount()
     {
         $this->loadProducts();
@@ -36,10 +61,6 @@ class ProductosPublicos extends Component
         }
     }
 
-    public function loadProducts()
-    {
-        $this->render();
-    }
 
     public function render()
     {

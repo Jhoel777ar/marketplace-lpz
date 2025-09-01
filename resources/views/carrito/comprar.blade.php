@@ -136,7 +136,7 @@
             </div>
 
 
-            <a href="{{ route('checkout') }}" class="w-full inline-block text-center bg-black text-white py-3 rounded-lg mt-6 hover:bg-gray-800 font-medium">Finalizar compra</a>
+            <a href="{{ route('checkout') }}" class="w-full inline-block text-center bg-black text-white py-3 rounded-lg mt-6 hover:bg-gray-800 font-medium">Realizar Compra</a>
         </div>
 
 

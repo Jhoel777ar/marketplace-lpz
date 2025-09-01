@@ -10,6 +10,8 @@ use Stripe\StripeClient;
 use App\Models\Carrito;
 use App\Models\Venta;
 use App\Models\VentaProducto;
+use App\Events\ProductChanged;
+use App\Models\Producto;
 
 class CheckoutController extends Controller
 {
@@ -79,6 +81,7 @@ class CheckoutController extends Controller
 
     public function success(Request $request)
     {
+   
         $paymentIntentId = $request->query('payment_intent');
         $paymentIntentClient = $request->query('payment_intent_client_secret');
 
@@ -135,6 +138,17 @@ class CheckoutController extends Controller
                         'cantidad' => $cp->cantidad,
                         'subtotal' => $cp->subtotal,
                     ]);
+
+                    // Descontar stock de forma segura (lock for update para concurrencia)
+                    $producto = Producto::where('id', $cp->producto_id)->lockForUpdate()->first();
+                    if ($producto) {
+                        $nuevoStock = max(0, $producto->stock - $cp->cantidad);
+                        $producto->stock = $nuevoStock;
+                        $producto->save();
+
+                        // Emitir evento para notificar cambio de producto (solo el stock)
+                        event(new ProductChanged($producto, 'stock_updated'));
+                    }
                 }
 
                 // Vaciar carrito
