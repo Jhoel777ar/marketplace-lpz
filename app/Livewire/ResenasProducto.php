@@ -16,7 +16,7 @@ class ResenasProducto extends Component
     public $calificacion_servicio;
     public $reseña;
 
-    public $editingResenaId = null; 
+    public $editingResenaId = null;
 
     protected $rules = [
         'calificacion_producto' => 'required|integer|min:1|max:5',
@@ -47,9 +47,8 @@ class ResenasProducto extends Component
             ]);
 
             $this->dispatch('resena-actualizada');
-
         } else {
-            Reseña::create([
+            $reseña = Reseña::create([
                 'producto_id' => $this->producto->id,
                 'user_id' => Auth::id(),
                 'emprendedor_id' => $this->producto->emprendedor_id,
@@ -58,6 +57,11 @@ class ResenasProducto extends Component
                 'reseña' => $this->reseña,
                 'aprobada' => true,
             ]);
+
+            $emprendedor = $this->producto->emprendedor;
+            if ($emprendedor) {
+                $emprendedor->notify(new \App\Notifications\NuevaReseñaNotification($reseña));
+            }
 
             $this->dispatch('resena-agregada');
         }

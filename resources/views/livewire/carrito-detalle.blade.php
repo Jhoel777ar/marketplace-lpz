@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto p-6">
+<div>
     <h1 class="text-3xl font-extrabold mb-6 text-gray-900 dark:text-gray-100">
         Mi carrito
     </h1>
@@ -35,10 +35,12 @@
               focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-all duration-300" />
                     <p class="font-semibold text-gray-900 dark:text-gray-100 text-lg">Bs.
                         {{ number_format($item->subtotal, 2) }}</p>
-                    <button wire:click="eliminar({{ $item->id }})"
+                    <button wire:click="eliminar({{ $item->id }})" wire:loading.attr="disabled"
+                        wire:target="eliminar({{ $item->id }})"
                         class="text-red-500 hover:text-red-700 bg-red-500/10 dark:bg-red-600/20 px-3 py-1 rounded-2xl border border-red-200 dark:border-red-700 
-                           backdrop-blur-sm shadow-md hover:scale-110 transition-all duration-300">
-                        X
+           backdrop-blur-sm shadow-md hover:scale-110 transition-all duration-300">
+                        <span wire:loading.remove wire:target="eliminar({{ $item->id }})">X</span>
+                        <span wire:loading wire:target="eliminar({{ $item->id }})">Eliminando...</span>
                     </button>
                 </div>
             </div>

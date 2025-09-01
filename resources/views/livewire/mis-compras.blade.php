@@ -1,9 +1,4 @@
-<div
-    class="p-6 min-h-screen 
-    bg-gradient-to-br from-gray-50 via-white to-gray-100 
-    dark:from-[rgb(23,23,23)] dark:via-[rgb(38,38,38)] dark:to-[rgb(23,23,23)] 
-    transition-colors duration-500">
-
+<div >
     <h1
         class="text-4xl font-extrabold mb-8 text-center 
         bg-clip-text text-transparent 
@@ -44,7 +39,7 @@
 
                     <div class="mb-3 text-gray-700 dark:text-gray-300">
                         <span class="font-semibold">Total:</span>
-                        <span class="text-indigo-600 dark:text-indigo-400 font-bold">
+                        <span class="text-green-600 dark:text-green-400 font-bold">
                             {{ number_format($venta->total, 2) }} Bs.
                         </span>
                     </div>
@@ -57,8 +52,8 @@
                             @foreach ($venta->productos as $vp)
                                 <li
                                     class="flex items-center gap-4 p-2 rounded-xl
-                                    bg-white/40 dark:bg-gray-800/40 
-                                    hover:bg-gray-100/70 dark:hover:bg-gray-700/50
+                                    bg-white/40 dark:bg-gray-900/20 
+                                    hover:bg-gray-100/70 dark:hover:bg-gray-700/30
                                     backdrop-blur-lg
                                     transition-colors duration-200">
                                     <img src="{{ $vp->producto->imagenes->first()
@@ -103,7 +98,7 @@
                     @if ($venta->envio)
                         <div
                             class="text-sm text-gray-600 dark:text-gray-400 
-                            bg-gray-100/50 dark:bg-gray-800/50 
+                            bg-gray-100/50 dark:bg-gray-900/20 
                             p-4 rounded-xl backdrop-blur-md">
                             <span class="font-semibold">Envío:</span>
                             {{ $venta->envio->direccion }},

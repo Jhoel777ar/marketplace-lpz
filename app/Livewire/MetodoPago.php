@@ -190,6 +190,14 @@ class MetodoPago extends Component
             DB::commit();
             $this->paso = 4;
 
+            $emprendedores = $venta->productos->pluck('producto.emprendedor_id')->unique();
+            foreach ($emprendedores as $emprendedor_id) {
+                $emprendedor = \App\Models\User::find($emprendedor_id);
+                if ($emprendedor) {
+                    $emprendedor->notify(new \App\Notifications\NuevaVentaNotification($venta));
+                }
+            }
+
             $this->dispatch('alerta', type: 'success', message: 'Compra realizada con éxito!');
             $this->dispatch('compraExitosa');
         } catch (Exception $e) {
