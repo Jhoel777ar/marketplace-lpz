@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Exception;
+use App\Jobs\EnviarCorreoVenta;
 
 class MetodoPago extends Component
 {
@@ -197,7 +198,7 @@ class MetodoPago extends Component
                     $emprendedor->notify(new \App\Notifications\NuevaVentaNotification($venta));
                 }
             }
-
+            EnviarCorreoVenta::dispatch($venta);
             $this->dispatch('alerta', type: 'success', message: 'Compra realizada con éxito!');
             $this->dispatch('compraExitosa');
         } catch (Exception $e) {
