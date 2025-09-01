@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\TestVentaController;
+use App\Livewire\MisCompras;
+use App\Livewire\MetodoPago;
+use App\Livewire\CarritoDetalle;
+use App\Livewire\ProductoDetalle;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,23 +34,16 @@ require __DIR__.'/auth.php';
 Route::get('/test-venta', [TestVentaController::class, 'create'])->middleware('auth');
 Route::get('/test-resena', [\App\Http\Controllers\TestReseñaController::class, 'create'])->middleware('auth');
 
-use App\Livewire\ProductoDetalle;
 
 Route::get('/productos/{producto}', ProductoDetalle::class)->name('productos.detalle');
-
-use App\Livewire\CarritoDetalle;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/carrito', CarritoDetalle::class)->name('carrito');
 });
 
-use App\Livewire\MetodoPago;
 Route::middleware(['auth'])->group(function () {
     Route::get('/metodo-pago', MetodoPago::class)->name('metodo.pago');
 });
-
-
-use App\Livewire\MisCompras;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/mis-compras', MisCompras::class)->name('mis.compras');

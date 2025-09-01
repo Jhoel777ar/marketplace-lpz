@@ -38,6 +38,18 @@
                     </div>
                 @endif
             </div>
+            <div class="mb-4 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <i class="fas fa-user text-gray-500 dark:text-gray-400"></i>
+                <span class="font-semibold">Vendido por:</span>
+                @if ($producto->emprendedor)
+                    <span>{{ $producto->emprendedor->name }}</span>
+                    @if ($producto->emprendedor->ubicacion)
+                        <span class="text-gray-500 dark:text-gray-400">({{ $producto->emprendedor->ubicacion }})</span>
+                    @endif
+                @else
+                    <span class="text-gray-500 dark:text-gray-400">Desconocido</span>
+                @endif
+            </div>
             <div class="prose dark:prose-invert max-w-none">
                 {!! $producto->descripcion !!}
             </div>
