@@ -13,6 +13,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+    <script src="https://arkdev.pages.dev/arkdev.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
