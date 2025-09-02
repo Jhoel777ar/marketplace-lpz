@@ -140,10 +140,11 @@ class MetodoPago extends Component
             }
 
             $this->paso = 2;
-
+            $totalUSD = $this->total / 6.92;
+            $amount = max(intval($totalUSD * 100), 50);
             Stripe::setApiKey(env('STRIPE_SECRET'));
             $paymentIntent = PaymentIntent::create([
-                'amount' => intval($this->total * 100),
+                'amount' => $amount,
                 'currency' => config('cashier.currency'),
                 'payment_method_types' => ['card'],
                 'description' => "Compra en Marketplace de " . $user->name,
