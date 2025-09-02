@@ -42,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/carrito/aplicar-cupon', [App\Http\Controllers\CarritoController::class, 'aplicarCupon'])->name('carrito.aplicarCupon');
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout');
+    // Enviar dirección y preparar pago (crea venta y envio, devuelve clientSecret)
+    Route::post('/checkout', [CheckoutController::class, 'storeAddress'])->name('checkout.store');
     // Success page after Stripe redirect
     Route::get('/payments/success', [CheckoutController::class, 'success'])->name('payments.success');
 
