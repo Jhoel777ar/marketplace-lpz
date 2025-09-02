@@ -49,17 +49,8 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-
-
-
-
-
-
-
 require __DIR__.'/auth.php';
 
-Route::get('/test-venta', [TestVentaController::class, 'create'])->middleware('auth');
-Route::get('/test-resena', [\App\Http\Controllers\TestReseñaController::class, 'create'])->middleware('auth');
 
 use App\Livewire\ProductoDetalle;
 
