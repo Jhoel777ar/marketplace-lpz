@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Exception;
+use App\Jobs\EnviarCorreoVenta;
 
 class MetodoPago extends Component
 {
@@ -37,6 +38,9 @@ class MetodoPago extends Component
                 );
             }
             $this->paso = 0;
+        }
+        if ($this->carrito && $this->carrito->productos()->count() === 0) {
+            return redirect()->route('mis.compras');
         }
     }
 
@@ -190,6 +194,14 @@ class MetodoPago extends Component
             DB::commit();
             $this->paso = 4;
 
+            $emprendedores = $venta->productos->pluck('producto.emprendedor_id')->unique();
+            foreach ($emprendedores as $emprendedor_id) {
+                $emprendedor = \App\Models\User::find($emprendedor_id);
+                if ($emprendedor) {
+                    $emprendedor->notify(new \App\Notifications\NuevaVentaNotification($venta));
+                }
+            }
+            EnviarCorreoVenta::dispatch($venta);
             $this->dispatch('alerta', type: 'success', message: 'Compra realizada con éxito!');
             $this->dispatch('compraExitosa');
         } catch (Exception $e) {

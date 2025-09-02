@@ -1,7 +1,7 @@
 <div class="mt-6">
     <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Reseñas</h2>
     @auth
-        <form wire:submit.prevent="submit"
+        <form id="formResena" wire:submit.prevent="submit"
             class="space-y-4 mb-8 bg-gray-50 dark:bg-[#1a1a1a] p-4 rounded-2xl shadow-md transition">
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -11,15 +11,16 @@
                     @for ($i = 1; $i <= 5; $i++)
                         <button type="button" wire:click="$set('calificacion_producto', {{ $i }})"
                             class="text-2xl transition transform duration-150 ease-in-out
-                            {{ $calificacion_producto >= $i
-                                ? 'text-yellow-400 hover:text-yellow-500 scale-110'
-                                : 'text-gray-300 dark:text-gray-600 hover:text-yellow-300 hover:scale-110' }}">
+                {{ $calificacion_producto >= $i
+                    ? 'text-yellow-400 hover:text-yellow-500 scale-110'
+                    : 'text-gray-300 dark:text-gray-600 hover:text-yellow-300 hover:scale-110' }}">
                             ★
                         </button>
                     @endfor
                 </div>
                 <p class="text-xs text-gray-500 mt-1 font-semibold">
-                    {{ $calificacion_producto }}/5
+                    <span wire:loading.delay>Calificando...</span>
+                    <span wire:loading.remove>{{ $calificacion_producto }}/5</span>
                 </p>
                 @error('calificacion_producto')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -33,18 +34,22 @@
                     @for ($i = 1; $i <= 5; $i++)
                         <button type="button" wire:click="$set('calificacion_servicio', {{ $i }})"
                             class="text-2xl transition transform duration-150 ease-in-out
-                            {{ $calificacion_servicio >= $i
-                                ? 'text-blue-400 hover:text-blue-500 scale-110'
-                                : 'text-gray-300 dark:text-gray-600 hover:text-blue-300 hover:scale-110' }}">
+                {{ $calificacion_servicio >= $i
+                    ? 'text-blue-400 hover:text-blue-500 scale-110'
+                    : 'text-gray-300 dark:text-gray-600 hover:text-blue-300 hover:scale-110' }}">
                             ★
                         </button>
                     @endfor
                 </div>
-                @if ($calificacion_servicio)
-                    <p class="text-xs text-gray-500 mt-1 font-semibold">
-                        {{ $calificacion_servicio }}/5
-                    </p>
-                @endif
+                <p class="text-xs text-gray-500 mt-1 font-semibold">
+                    <span wire:loading.delay>Calificando...</span>
+                    <span wire:loading.remove>
+                        @if ($calificacion_servicio)
+                            {{ $calificacion_servicio }}/5
+                        @endif
+                    </span>
+                </p>
+
                 @error('calificacion_servicio')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
@@ -61,12 +66,17 @@
             </div>
             <button type="submit"
                 class="w-full md:w-auto px-6 py-2.5 rounded-2xl font-semibold 
-           text-gray-800 dark:text-white 
-           bg-emerald-500/10 dark:bg-emerald-500/20 
-           border border-emerald-500/30 dark:border-emerald-500/40 
-           hover:bg-emerald-500/20 dark:hover:bg-emerald-500/40 
-           backdrop-blur-md shadow-md transition-all duration-300">
-                {{ $editingResenaId ? 'Editar reseña' : 'Enviar reseña' }}
+       text-gray-800 dark:text-white 
+       bg-emerald-500/10 dark:bg-emerald-500/20 
+       border border-emerald-500/30 dark:border-emerald-500/40 
+       hover:bg-emerald-500/20 dark:hover:bg-emerald-500/40 
+       backdrop-blur-md shadow-md transition-all duration-300">
+                <span wire:loading.remove>
+                    {{ $editingResenaId ? 'Editar reseña' : 'Enviar reseña' }}
+                </span>
+                <span wire:loading.delay>
+                    Espere...
+                </span>
             </button>
         </form>
     @else
@@ -100,24 +110,32 @@
             </p>
             @if (Auth::id() === $resena->user_id)
                 <div class="mt-3 sm:absolute sm:top-3 sm:right-3 flex flex-wrap gap-2">
-                    <button wire:click="edit({{ $resena->id }})"
-                        class="text-sm px-3 py-1 rounded-2xl font-semibold
-                   text-gray-800 dark:text-white
-                   bg-yellow-400/20 dark:bg-yellow-400/30
-                   border border-yellow-400/30 dark:border-yellow-400/50
-                   hover:bg-yellow-400/30 dark:hover:bg-yellow-400/50
-                   backdrop-blur-md shadow-md transition-all duration-300">
-                        Editar
-                    </button>
+                    <a href="#formResena">
+                        <button wire:click="edit({{ $resena->id }})"
+                            class="text-sm px-3 py-1 rounded-2xl font-semibold
+           text-gray-800 dark:text-white
+           bg-yellow-400/20 dark:bg-yellow-400/30
+           border border-yellow-400/30 dark:border-yellow-400/50
+           hover:bg-yellow-400/30 dark:hover:bg-yellow-400/50
+           backdrop-blur-md shadow-md transition-all duration-300">
+                            <span wire:loading.remove>✏ Editar</span>
+                            <span wire:loading.delay>Espere...</span>
+                        </button>
+                    </a>
 
                     <button wire:click="delete({{ $resena->id }})"
                         class="text-sm px-3 py-1 rounded-2xl font-semibold
-                   text-gray-800 dark:text-white
-                   bg-red-500/20 dark:bg-red-500/30
-                   border border-red-500/30 dark:border-red-500/50
-                   hover:bg-red-500/30 dark:hover:bg-red-500/50
-                   backdrop-blur-md shadow-md transition-all duration-300">
-                        Eliminar
+       text-gray-800 dark:text-white
+       bg-red-500/20 dark:bg-red-500/30
+       border border-red-500/30 dark:border-red-500/50
+       hover:bg-red-500/30 dark:hover:bg-red-500/50
+       backdrop-blur-md shadow-md transition-all duration-300">
+                        <span wire:loading.remove>
+                            Eliminar
+                        </span>
+                        <span wire:loading.delay>
+                            Espere...
+                        </span>
                     </button>
                 </div>
             @endif

@@ -58,9 +58,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <flux:input wire:model="password_confirmation" :label="__('Confirm password')" type="password" required
             autocomplete="new-password" :placeholder="__('Confirm password')" viewable />
 
-        <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full">
+        <div class="flex gap-4 justify-end">
+            <flux:button type="submit" variant="primary" class="flex-1">
                 {{ __('Create account') }}
+            </flux:button>
+            <flux:button as="a" :href="url('emprendedor')" variant="filled"
+                class="bg-amber-500 hover:bg-amber-600 text-white flex-1" wire:navigate>
+                {{ __('Soy un Emprendedor') }}
             </flux:button>
         </div>
         <div class="flex items-center justify-center">
