@@ -83,6 +83,6 @@ class Producto extends Model
 
     protected function setDescripcionAttribute($value)
     {
-        $this->attributes['descripcion'] = Str::sanitize($value);
+        $this->attributes['descripcion'] = strip_tags($value, '<p><br><b><i><strong><em><ul><ol><li>');
     }
 }

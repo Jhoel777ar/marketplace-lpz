@@ -68,6 +68,7 @@ class ProductoSeeder extends Seeder
                 'user_id' => $emprendedor->id,
             ]
         );
-        $producto1->cupones()->sync([$cupon->id]);
+        $producto1->cupon()->sync([$cupon->id]);
+
     }
 }
