@@ -18,7 +18,8 @@ class VentaExitosaMail extends Mailable
      */
     public function __construct(Venta $venta)
     {
-        $this->venta = $venta;
+        // Cargar relaciones necesarias
+        $this->venta = $venta->load(['user', 'productos.producto', 'envio']);
     }
 
     /**
@@ -26,12 +27,13 @@ class VentaExitosaMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Compra realizada con éxito')
-                    ->view('emails.venta-exitosa')
-                    ->with([
-                        'ventaId' => $this->venta->id,
-                        'usuarioNombre' => $this->venta->user->name,
-                        'total' => $this->venta->total,
-                    ]);
+        return $this->subject('Factura de tu compra #' . $this->venta->id)
+            ->view('emails.venta-exitosa')
+            ->with([
+                'venta' => $this->venta,
+                'usuario' => $this->venta->user,
+                'productos' => $this->venta->productos,
+                'envio' => $this->venta->envio,
+            ]);
     }
 }

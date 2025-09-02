@@ -39,6 +39,9 @@ class MetodoPago extends Component
             }
             $this->paso = 0;
         }
+        if ($this->carrito && $this->carrito->productos()->count() === 0) {
+            return redirect()->route('mis.compras');
+        }
     }
 
     public function cargarDatos()
